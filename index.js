@@ -51,7 +51,7 @@ app.get('/user/:id', (req, res) => {
   if(!req.params.id)
   {
     res.writeHead(400);
-    res.end("Wrong parameters");
+    res.end("wrong parameters");
   } else {
     let user = req.params.id;
 
@@ -70,10 +70,46 @@ app.get('/user/:id', (req, res) => {
     }).catch((error) => {
       if(error == "no user") {
         res.writeHead(404);
-        res.end("User not found");
+        res.end("user not found");
       } else {
         res.writeHead(500);
-        res.end("DB error");
+        res.end("db error");
+      }
+    });
+  }
+});
+
+app.post('/user', (req, res) => {
+  
+  if(!req.body.email || !req.body.password) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let responsePromise = dbCall(`select * from user where email LIKE '${req.body.email}'`);
+    responsePromise.then((response) => {
+      
+      if(response.length !== 1) {
+        throw "no user";
+      }
+
+      if(response[0].password !== req.body.password) {
+        throw "invalid password";
+      }
+
+      res.writeHead(200, { 
+        'Content-type' : 'application/json'
+      });
+      res.end(JSON.stringify(response[0]));
+    }).catch((error)=>{
+      if(error == "no user") {
+        res.writeHead(404);
+        res.end("user not found");
+      } else if(error == "invalid password") {
+        res.writeHead(401);
+        res.end("invalid password");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
       }
     });
   }
