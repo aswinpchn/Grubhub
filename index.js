@@ -79,7 +79,7 @@ app.get('/user/:id', (req, res) => {
   }
 });
 
-app.post('/user', (req, res) => {
+app.post('/user/login', (req, res) => {
   
   if(!req.body.email || !req.body.password) {
     res.writeHead(400);
@@ -114,6 +114,41 @@ app.post('/user', (req, res) => {
     });
   }
 });
+
+app.put('/user/', (req, res) => {
+  if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let duplicateEmail = false;
+    let promiseResponse = dbCall(`select * from user where email LIKE '${req.body.email}'`);
+    promiseResponse.then(response=>{
+      if(response.length >= 1) {
+        throw "duplicate user";
+      } else {
+        let insertResponse = dbCall(`insert into user values (NULL, '${req.body.name}', '${req.body.email}', '${req.body.password}', '${req.body.phone}', '${req.body.type}', 'http://google.com')`);
+        insertResponse.then(response=>{
+          if(response.affectedRows == 1) {
+            res.writeHead(200, { 
+              'Content-type' : 'application/json'
+            });
+            res.end('success');
+          } else {
+            throw "db error";
+          } 
+        });
+      }
+    }).catch(error=>{
+      if(error == "duplicate user") {
+        res.writeHead(401);
+        res.end("duplicate user");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
+      }
+    });
+  }
+})
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
