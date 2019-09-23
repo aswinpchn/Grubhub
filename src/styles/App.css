@@ -33,7 +33,7 @@ html, body, #root {
   color: #09d3ac;
 }
 
-.home, .login {
+.home, .login, .sign-up {
   display: flex;
   height: 100%;
   flex-direction: column;
@@ -56,9 +56,17 @@ html, body, #root {
   text-decoration-line: none;
 }
 
-.title:hover {
-  text-decoration: none;
+.title-link {
+  flex: 1;
+}
+
+.title-link:hover {
   text-decoration-line: none;
+  text-decoration: none;
+}
+
+.title {
+  margin: 0;
 }
 
 .login-buttons {
@@ -72,16 +80,25 @@ html, body, #root {
   margin-right: 2rem;
 }
 
-.login-form {
+.login-form, .signup-form {
   align-self: center;
   width: 60%;
-  margin-top: 15rem;
+  margin-top: 10rem;
 }
 
 .form-buttons {
-    margin-left: 20rem;
+    margin-left: 40%;
 }
 
-.form-login-buttons {
+.form-login-buttons, .form-signup-buttons {
   margin-right: 2rem;
+}
+
+.form-heading {
+    text-align: center;
+    padding-bottom: 2rem;
+}
+
+.user-type {
+  text-transform: capitalize;
 }
