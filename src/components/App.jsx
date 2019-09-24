@@ -8,18 +8,18 @@ function App() {
   const loggedIn = false;
   return (
     <Router>
-          <Switch>
-            <Route exact path='/' render={() => (
-              loggedIn ? (
-                <Redirect to="/home" />
-              ) : (
-                <Redirect to="/login"/>
-              )
-            )}/>
-            <Route path='/login' component={Login}/>
-            <Route path='/home' component={Home}/>
-          </Switch>
-        </Router>
+      <Switch>
+        <Route exact path='/' render={() => (
+          loggedIn ? (
+            <Redirect to="/home" />
+          ) : (
+            <Redirect to="/login"/>
+          )
+        )}/>
+        <Route path='/login' component={Login}/>
+        <Route path='/home' component={Home}/>
+      </Switch>
+    </Router>
   );
 }
 
