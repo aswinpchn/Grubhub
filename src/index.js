@@ -5,8 +5,29 @@ import App from './components/App';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux'
-import { store } from './store'
-store.dispatch({ type : "ADD_TODO" });
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import thunk from 'redux-thunk';
+import userReducer from './reducers/userReducer';
+
+const rootReducer = combineReducers ({
+    user : userReducer
+});
+
+const store = createStore(
+    rootReducer, 
+    compose(
+        applyMiddleware(thunk),
+        window.devToolsExtension ? window.devToolsExtension() : f => f
+    )
+);
+
+// store.dispatch({
+//     type : 'LOGIN_SUCCESS',
+//     payload : {
+//         username : 'aswinp',
+//         password : '12345'
+//     }
+// });
 
 ReactDOM.render(<Provider store={store}>
                     <App />

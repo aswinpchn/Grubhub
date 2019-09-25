@@ -1,10 +1,10 @@
 import React from 'react';
 import Header from './Header';
 import { Button, Form } from 'react-bootstrap';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { getField } from '../utils';
 import { connect } from 'react-redux';
+import { loginTrigger } from '../actions/user-action';
 
 class Login extends React.Component {
     constructor(props) {
@@ -31,22 +31,7 @@ class Login extends React.Component {
         //prevent page from refresh
         event.preventDefault();
 
-        axios.defaults.withCredentials = true;
-
-        axios.post('http://localhost:3001/user/login', {email : this.state.email, password : this.state.password})
-        .then(response => {
-            if(response.status === 200) {
-                console.log(response.data);
-            }   
-        }).catch((error) => {
-            if(error.response.status === 404) {
-                console.log('user not found');
-            } else if(error.response.status === 401) {
-                console.log('invalid password');
-            } else {
-                console.log('db error');
-            }
-        });    
+        this.props.loginTrigger(this.state.email, this.state.password);   
     }
 
     emailChangeHandler = (e) => {
@@ -115,10 +100,22 @@ class Login extends React.Component {
         return(
             <div className="login">
                 <Header userDetails={null} />
+                <p>{this.props.error}</p>
                 {componentToBeRendered}
             </div>
         )
     }
 }
 
-export default connect ()(Login);
+const mapStateToProps = (state) => ( {
+        error: state.error
+    }
+)
+
+const mapDispatchToProps = (dispatch) => ({
+    loginTrigger: (username, password) => dispatch(loginTrigger(username, password))
+});
+
+
+
+export default connect (mapStateToProps, mapDispatchToProps)(Login);
