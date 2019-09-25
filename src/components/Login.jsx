@@ -4,6 +4,7 @@ import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { getField } from '../utils';
+import { connect } from 'react-redux';
 
 class Login extends React.Component {
     constructor(props) {
@@ -120,4 +121,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login;
+export default connect ()(Login);
