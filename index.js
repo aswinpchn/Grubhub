@@ -1,9 +1,17 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser')
 var session = require('express-session');
 var cors = require('cors');
 var mysql = require('mysql');
+
+app.use(cookieParser()) // needed if you want to sign a cookie
+// res.cookie("aswin","21"); // in this way we can set a cookie in our client side
+
+// Cookie is basic, session is something that needs more work.
+// https://stackoverflow.com/questions/3804209/what-are-sessions-how-do-they-work
+// https://www.youtube.com/watch?v=SUZAIYLebnQ&t=9s
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
@@ -80,7 +88,7 @@ app.get('/user/:id', (req, res) => {
 });
 
 app.post('/user/login', (req, res) => {
-  
+  console.log(req.cookie);
   if(!req.body.email || !req.body.password) {
     res.writeHead(400);
     res.end("wrong parameters");
