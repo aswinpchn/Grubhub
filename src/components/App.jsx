@@ -23,7 +23,7 @@ function App() {
             <Route path='/create-account/:type' component={SignUp} />
             <Route path='/create-account' component={SignUp} />
           </Switch>
-        </Router>
+    </Router>
   );
 }
 

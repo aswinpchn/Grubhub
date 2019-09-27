@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { getField } from '../utils';
 import { connect } from 'react-redux';
 import { loginTrigger } from '../actions/user-action';
+import cookie from 'react-cookies';
+import { Redirect } from 'react-router-dom';
 
 class Login extends React.Component {
     constructor(props) {
@@ -91,6 +93,12 @@ class Login extends React.Component {
     }
 
     render() {
+        let redirectVar = null;
+
+        if(cookie.load('cookie')){
+            redirectVar = <Redirect to= "/home"/>
+        }
+
         let componentToBeRendered = null;
         if(this.state.loadLoginFor == null) {
             componentToBeRendered = this.renderCommonLoginButtons();
@@ -98,19 +106,23 @@ class Login extends React.Component {
             componentToBeRendered = this.renderLoginForm();
         }
         return(
-            <div className="login">
-                <Header userDetails={null} />
-                <p>{this.props.error}</p>
-                {componentToBeRendered}
-            </div>
+            <div>
+                {redirectVar}
+                <div className="login">
+                    <Header userDetails={null} />
+                    <p>{this.props.user.error}</p>
+                    {componentToBeRendered}
+                </div>
+            </div>    
         )
     }
 }
 
-const mapStateToProps = (state) => ( {
-        error: state.error
-    }
-)
+const mapStateToProps = (state) => {
+    return {
+        user : state.user
+    };
+}
 
 const mapDispatchToProps = (dispatch) => ({
     loginTrigger: (username, password) => dispatch(loginTrigger(username, password))

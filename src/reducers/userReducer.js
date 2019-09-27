@@ -11,11 +11,14 @@ const userReducer = (state = initialState, action) => {
         case 'LOGIN_SUCCESS' : 
             return Object.assign({}, state, {
                 username : action.payload.username,
-                password : action.payload.password
+                password : action.payload.password,
+                error : ''
             });
         case 'LOGIN_FAILURE' :
             return Object.assign({}, state, {
-                error : action.payload.error
+                error : action.payload.error,
+                username : '',
+                password : ''
             });
         default:
             return state;

@@ -29,12 +29,11 @@ const loginFailure = (error) => {
 }
 
 export const loginTrigger = (username, password) => {
-    //console.log(username);
     return dispatch => {
       return getLogin(username, password).then(response => {
           dispatch(loginSuccess(username, password));
       }).catch(error => {
-          dispatch(loginFailure(error));
+          dispatch(loginFailure(error.response.statusText));
       });
     };
   }
