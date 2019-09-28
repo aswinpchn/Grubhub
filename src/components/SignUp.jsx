@@ -8,28 +8,100 @@ import { getField } from '../utils';
 class SignUp extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            name : "",
+            email : "",
+            password : "",
+            zip : "",
+            phone : "",
+            restaurantname : "",
+            cuisine : ""
+        };
+
         this.renderSignUpForm = this.renderSignUpForm.bind(this);
+        this.onNameChange = this.onNameChange.bind(this);
+        this.onEmailChange = this.onEmailChange.bind(this);
+        this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.onZipChange = this.onZipChange.bind(this);
+        this.onPhoneChange = this.onPhoneChange.bind(this);
+        this.onRestaurantNameChange = this.onRestaurantNameChange.bind(this);
+        this.onCuisineChange = this.onCuisineChange.bind(this);
+    }
+
+    onNameChange = (e) => {
+        this.setState({
+            name : e.target.value
+        })
+    }
+
+    onEmailChange = (e) => {
+        this.setState({
+            email : e.target.value
+        })
+    }
+
+    onPasswordChange = (e) => {
+        this.setState({
+            password : e.target.value
+        })
+    }
+
+    onZipChange = (e) => {
+        this.setState({
+            zip : e.target.value
+        })
+    }
+
+    onPhoneChange = (e) => {
+        this.setState({
+            phone : e.target.value
+        })
+    }
+
+    onRestaurantNameChange = (e) => {
+        this.setState({
+            restaurantname : e.target.value
+        })
+    }
+
+    onCuisineChange = (e) => {
+        this.setState({
+            cuisine : e.target.value
+        })
+    }
+
+    signUp = (e) => {
+        e.preventDefault();
+
+        // Make axios call here.
     }
 
     renderSignUpForm(accountType) {
         return (
             <>
-                <Form className="signup-form">
+                <Form className="signup-form" onSubmit = {this.signUp} >
                     <h2 className="form-heading">Sign Up as <span className="user-type">{accountType}</span></h2>
+                    <Form.Group controlId="formBasicName">
+                        <Form.Control type="text" onChange = {this.onNameChange} placeholder="Name" required />
+                        <Form.Control.Feedback type="invalid">
+                            Please enter the Name
+                        </Form.Control.Feedback>
+                    </Form.Group>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Control type="email" placeholder="Enter email" required />
+                        <Form.Control type="email" onChange = {this.onEmailChange} placeholder="Enter email" required />
                         <Form.Control.Feedback type="invalid">
                             Please enter your username
                     </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formBasicPassword">
-                        <Form.Control type="password" placeholder="Password" required />
+                        <Form.Control type="password" onChange = {this.onPasswordChange} placeholder="Password" required />
                         <Form.Control.Feedback type="invalid">
                             Please enter your password
                     </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formBasicZipCode">
-                        <Form.Control type="text" placeholder="ZipCode" required />
+                        <Form.Control type="text" onChange = {this.onZipChange} placeholder="ZipCode" required />
                         <Form.Control.Feedback type="invalid">
                             Please enter your Zipcode
                     </Form.Control.Feedback>
@@ -39,25 +111,27 @@ class SignUp extends React.Component {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>+1</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Form.Control type="text" placeholder="ContactNumber" required />
+                            <Form.Control type="text" onChange = {this.onPhoneChange} placeholder="ContactNumber" required />
                             <Form.Control.Feedback type="invalid">
                                 Please enter your Contact Number
                             </Form.Control.Feedback>
                         </InputGroup>
                     </Form.Group>
                     {(accountType === 'owner') ? 
-                        <><Form.Group controlId="formBasicName">
-                        <Form.Control type="text" placeholder="Restaurant Name" required />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter Restaurant Name
+                    <>
+                        <Form.Group controlId="formBasicRestaurantName">
+                            <Form.Control type="text" onChange = {this.onRestaurantNameChange} placeholder="Restaurant Name" required />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter Restaurant Name
                             </Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Control type="password" placeholder="Password" required />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter the Cuisine
+                        </Form.Group>
+                        <Form.Group controlId="formBasicCuisine">
+                            <Form.Control type="text" onChange = {this.onCuisineChange} placeholder="Cuisine" required />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter the Cuisine
                             </Form.Control.Feedback>
-                    </Form.Group></> : null }
+                        </Form.Group>
+                    </> : null }
                         <Link to={`/login/${accountType}`}><Button variant="link">Have an account already?</Button></Link>
                     <div className="form-buttons">
                         <Link to="/"><Button className="form-signup-buttons" variant="dark">Cancel</Button></Link>
