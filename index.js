@@ -103,7 +103,7 @@ app.post('/user/login', (req, res) => {
       if(response[0].password !== req.body.password) {
         throw "invalid password";
       }
-
+      res.cookie('cookie',"admin",{maxAge: 900000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
       });
