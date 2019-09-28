@@ -123,7 +123,7 @@ app.post('/user/login', (req, res) => {
   }
 });
 
-app.put('/user/', (req, res) => {
+app.put('/user/customerSignUp', (req, res) => {
   if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
     res.writeHead(400);
     res.end("wrong parameters");
@@ -137,9 +137,7 @@ app.put('/user/', (req, res) => {
         let insertResponse = dbCall(`insert into user values (NULL, '${req.body.name}', '${req.body.email}', '${req.body.password}', '${req.body.phone}', '${req.body.type}', 'http://google.com')`);
         insertResponse.then(response=>{
           if(response.affectedRows == 1) {
-            res.writeHead(200, { 
-              'Content-type' : 'application/json'
-            });
+            res.writeHead(200);
             res.end('success');
           } else {
             throw "db error";
