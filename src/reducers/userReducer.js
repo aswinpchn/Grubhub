@@ -1,24 +1,34 @@
 const initialState = { 
     username : '',
     password : '',
-    profile : {},
-    error : ''
+    error : '',
+    name : '',
+    phone : '',
+    type : '',
+    image : '',
 };
 
 const userReducer = (state = initialState, action) => {
-    console.log(action);
     switch(action.type) {
         case 'LOGIN_SUCCESS' : 
             return Object.assign({}, state, {
                 username : action.payload.username,
                 password : action.payload.password,
-                error : ''
+                name : action.payload.name,
+                phone : action.payload.phone,
+                type : action.payload.type,
+                image : action.payload.image,
+                error : '',
             });
         case 'LOGIN_FAILURE' :
             return Object.assign({}, state, {
                 error : action.payload.error,
                 username : '',
-                password : ''
+                password : '',
+                name : '',
+                phone : '',
+                type : '',
+                image : '',
             });
         default:
             return state;

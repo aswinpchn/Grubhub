@@ -9,7 +9,7 @@ class Header extends React.Component {
     }
 
     renderProfile() {
-        return (this.props.userDetails != null) ? <span className='profile-logo'><img alt="view profile" src={profile}></img></span> : null;
+        return (this.props && this.props.userDetails && this.props.userDetails.name !== '') ? <span className='profile-logo'>Hi {this.props.userDetails.name}</span> : null;
     }
 
     render() {

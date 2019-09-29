@@ -9,12 +9,16 @@ const getLogin = (username, password) => {
     });
 }
 
-const loginSuccess = (username, password) => {
+const loginSuccess = (username, password, name, phone, type, image) => {
     return {
         type : 'LOGIN_SUCCESS',
         payload : {
             username : username,
-            password : password
+            password : password,
+            name : name,
+            phone : phone,
+            type : type,
+            image : image,
         }
     }
 }
@@ -31,7 +35,7 @@ const loginFailure = (error) => {
 export const loginTrigger = (username, password) => {
     return dispatch => {
       return getLogin(username, password).then(response => {
-          dispatch(loginSuccess(username, password));
+          dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image));
       }).catch(error => {
           dispatch(loginFailure(error.response.statusText));
       });

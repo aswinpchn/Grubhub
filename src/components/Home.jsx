@@ -14,7 +14,7 @@ class Home extends React.Component {
     render() {
         return(
             <div className="home">
-                Hi {this.props.user.username}
+                <Header userDetails={this.props.user} />
             </div>
         );
     }

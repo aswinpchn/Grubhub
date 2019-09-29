@@ -109,7 +109,7 @@ class Login extends React.Component {
             <div>
                 {redirectVar}
                 <div className="login">
-                    <Header userDetails={null} />
+                    <Header />
                     <p>{this.props.user.error}</p>
                     {componentToBeRendered}
                 </div>
