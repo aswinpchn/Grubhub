@@ -89,22 +89,26 @@ app.get('/user/:id', (req, res) => {
 });
 
 app.post('/user/login', (req, res) => {
-  console.log(req.cookie);
-  if(!req.body.email || !req.body.password) {
+  if(!req.body.email || !req.body.password || !req.body.type) {
     res.writeHead(400);
     res.end("wrong parameters");
   } else {
     let responsePromise = dbCall(`select * from user where email LIKE '${req.body.email}'`);
     responsePromise.then((response) => {
       
-      if(response.length !== 1) {
+      if(response.length !== 1) { // but yeah, wont or should go more than one as signup email restriction is there.
         throw "no user";
+      }
+
+      if(response[0].type !== req.body.type) {
+        throw "wrong user type";
       }
 
       if(response[0].password !== req.body.password) {
         throw "invalid password";
       }
-      res.cookie('cookie',"admin",{maxAge: 900000, httpOnly: false, path : '/'});
+      let c = {username : req.body.username, password : req.body.password, type : req.body.type};
+      res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
       });
@@ -116,6 +120,9 @@ app.post('/user/login', (req, res) => {
       } else if(error == "invalid password") {
         res.writeHead(401);
         res.end("invalid password");
+      } else if(error == "wrong user type") {
+        res.writeHead(401);
+        res.end("wrong user type");
       } else {
         res.writeHead(500);
         res.end("db error");
