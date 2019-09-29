@@ -4,6 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getField } from '../utils';
+import Axios from 'axios';
 
 class SignUp extends React.Component {
     constructor(props) {
@@ -16,7 +17,9 @@ class SignUp extends React.Component {
             zip : "",
             phone : "",
             restaurantname : "",
-            cuisine : ""
+            cuisine : "",
+            error : "",
+            success : "",
         };
 
         this.renderSignUpForm = this.renderSignUpForm.bind(this);
@@ -74,12 +77,56 @@ class SignUp extends React.Component {
     signUp = (e) => {
         e.preventDefault();
 
-        // Make axios call here.
+        const accountType = getField(['match', 'params', 'type'], this.props);
+        if(accountType === "buyer") {
+            Axios.put('http://localhost:3001/user/customerSignUp', {  // http:// has to be there. otherwise cors will come/
+                name : this.state.name,
+                email : this.state.email,
+                password : this.state.password,
+                phone : this.state.phone,
+                type : 'c',
+                image : 'http://google.com'
+            }).then((response) => { // response.data has success
+                this.setState({
+                    success : response.data + ", you can now go to login page.",
+                    error : "",
+                });
+            }).catch((error) => { // error.response.data has duplicate user or db error
+                this.setState({
+                    error : error.response.data + ", so try login",
+                    success : "",
+                });
+            });
+        } else {
+            Axios.put('http://localhost:3001/user/ownerSignUp', {  // http:// has to be there. otherwise cors will come/
+                name : this.state.name,
+                email : this.state.email,
+                password : this.state.password,
+                phone : this.state.phone,
+                type : 'o',
+                image : 'http://google.com',
+                zip : this.state.zip,
+                restaurantname : this.state.restaurantname,
+                cuisine : this.state.cuisine,
+            }).then((response) => { // response.data has success
+                this.setState({
+                    success : response.data + ", you can now go to login page.",
+                    error : "",
+                });
+            }).catch((error) => { // error.response.data has duplicate user or db error
+                this.setState({
+                    error : error.response.data + ", so try login",
+                    success : "",
+                });
+            });
+        }
     }
 
     renderSignUpForm(accountType) {
         return (
             <>
+                {this.state.error ? <div>{this.state.error}</div> : null}
+                {this.state.success ?  <div>{this.state.success}</div> : null}
                 <Form className="signup-form" onSubmit = {this.signUp} >
                     <h2 className="form-heading">Sign Up as <span className="user-type">{accountType}</span></h2>
                     <Form.Group controlId="formBasicName">
@@ -135,7 +182,7 @@ class SignUp extends React.Component {
                         <Link to={`/login/${accountType}`}><Button variant="link">Have an account already?</Button></Link>
                     <div className="form-buttons">
                         <Link to="/"><Button className="form-signup-buttons" variant="dark">Cancel</Button></Link>
-                        <Button className="form-signup-buttons" variant="info" type="submit">Create Account</Button>
+                        <Button className="form-signup-buttons" variant="info" type="submit" onClick= {this.signUp} >Create Account</Button>
                     </div>
                 </Form>
             </>
@@ -144,7 +191,6 @@ class SignUp extends React.Component {
 
     render() {
         const accountType = getField(['match', 'params', 'type'], this.props);
-        console.log(this.props);
         let componentToBeRendered = null;
         if (accountType == null) {
             componentToBeRendered = <Alert className="error-alert" variant="danger">Please mention the account type to signup</Alert>
