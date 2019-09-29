@@ -33,7 +33,7 @@ class Login extends React.Component {
         //prevent page from refresh
         event.preventDefault();
 
-        this.props.loginTrigger(this.state.email, this.state.password);   
+        this.props.loginTrigger(this.state.email, this.state.password, (this.state.loadLoginFor === "owner")? "o" : "c" );   
     }
 
     emailChangeHandler = (e) => {
@@ -96,7 +96,7 @@ class Login extends React.Component {
         let redirectVar = null;
 
         if(cookie.load('cookie')){
-            redirectVar = <Redirect to= "/home"/>
+            redirectVar = <Redirect to= "/home"/>  // /home route should be defined in index.js to be able for the application to know where to reload.
         }
 
         let componentToBeRendered = null;
@@ -125,7 +125,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    loginTrigger: (username, password) => dispatch(loginTrigger(username, password))
+    loginTrigger: (username, password, type) => dispatch(loginTrigger(username, password, type))
 });
 
 
