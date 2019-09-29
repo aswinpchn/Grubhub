@@ -41,6 +41,7 @@ connection.connect((error) => {  // If you don't put this callback, app won't cr
 // connection.query is a callbacl type one, so instead of putting inside a prime, we can return things from it stand-alone as return.
 
 let dbCall = (query) => {
+  //console.log(query);
   var callPromise = new Promise ((resolve, reject) => {
     connection.query(query, (error, results, fields) => {
       if(error)
@@ -154,7 +155,40 @@ app.put('/user/customerSignUp', (req, res) => {
       }
     });
   }
-})
+});
+
+app.put('/user/ownerSignUp', (req, res) => {
+  if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let duplicateEmail = false;
+    let promiseResponse = dbCall(`select * from user where email LIKE '${req.body.email}'`);
+    promiseResponse.then((response) => {
+      if(response.length >= 1) {
+        throw "duplicate user";
+      } else {
+        let insertUserResponse = dbCall(`insert into user values (NULL, '${req.body.name}', '${req.body.email}', '${req.body.password}', '${req.body.phone}', '${req.body.type}', 'http://google.com')`);
+        insertUserResponse.then((response) => {
+          let owneridResponse = dbCall(`select id from user where email LIKE '${req.body.email}'`);
+          owneridResponse.then((response) => {
+            dbCall(`insert into restaurant values (NULL, '${req.body.restaurantname}', '${req.body.zip}', '${req.body.cuisine}', '${req.body.image}', ${response[0].id})`);
+            res.writeHead(200);
+            res.end("success");
+          });
+        });
+      }
+    }).catch((error) => {
+      if(error == "duplicate user") {
+        res.writeHead(401);
+        res.end("duplicate user");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
+      }
+    });
+  }
+});
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
