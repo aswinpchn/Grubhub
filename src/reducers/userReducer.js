@@ -6,6 +6,7 @@ const initialState = {
     phone : '',
     type : '',
     image : '',
+    dbprocess : false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -19,6 +20,7 @@ const userReducer = (state = initialState, action) => {
                 type : action.payload.type,
                 image : action.payload.image,
                 error : '',
+                dbprocess : false,
             });
         case 'LOGIN_FAILURE' :
             return Object.assign({}, state, {
@@ -29,7 +31,12 @@ const userReducer = (state = initialState, action) => {
                 phone : '',
                 type : '',
                 image : '',
+                dbprocess : false
             });
+        case 'DB_PROCESS_STARTED' : 
+            return Object.assign({}, state, { dbprocess : true});
+        case 'DB_PROCESS_ENDED' : 
+            return Object.assign({}, state, { dbprocess : false});  
         default:
             return state;
     }

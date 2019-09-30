@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const getLogin = (username, password, type) => {
     axios.defaults.withCredentials = true;
-
+    
     return axios.post('http://localhost:3001/user/login', {
         email : username,
         password : password,
@@ -30,6 +30,18 @@ const loginFailure = (error) => {
         payload : {
             error : error
         }
+    }
+}
+
+const dbProcessStarted = () => { // To maintain a state for tracking if any action is in process.
+    return {
+        type : 'DB_PROCESS_STARTED',
+    }
+}
+
+const dbProcessEnded = () => {
+    return {
+        type : 'DB_PROCESS_ENDED',
     }
 }
 
