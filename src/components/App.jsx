@@ -3,6 +3,7 @@ import '../styles/App.css';
 import Home from './Home';
 import Login from './Login';
 import SignUp from './SignUp';
+import Profile from './Profile';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import cookie from 'react-cookies';
 
@@ -24,6 +25,7 @@ function App(props) {
              {/* Tried to use render attrinute in route to put if-else case inside it, it caused inifnite loop while rendering */}
             <Route path='/create-account/:type' component={SignUp} />
             <Route path='/create-account' component={SignUp} />
+            <Route path='/profile' component={Profile} />
           </Switch>
     </Router>
   );
