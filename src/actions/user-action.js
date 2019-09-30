@@ -50,6 +50,7 @@ export const loginTrigger = (username, password, type) => {
       return getLogin(username, password, type).then(response => {
           dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image));
       }).catch(error => {
+          console.log(error);
           dispatch(loginFailure(error.response.statusText));
       });
     };

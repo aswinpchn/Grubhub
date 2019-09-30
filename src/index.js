@@ -35,12 +35,19 @@ const store = createStore(
 
 if(cookie.load('cookie')){ // If cookie is there and reload happens, it comes here and we do manual dispatch. and store data in store.
     let c = cookie.load('cookie');
-    store.dispatch(loginTrigger(c.username, c.password, c.type));
-}
+    let promise = store.dispatch(loginTrigger(c.username, c.password, c.type));  // we think password wouldnt be changed in meantime of reload, so we are easy on checks.
+    promise.then(() => {
+        ReactDOM.render(<Provider store={store}>
+            <App store={store} />
+        </Provider>, document.getElementById('root'));
+    }).catch(() => {
 
-ReactDOM.render(<Provider store={store}>
-                    <App />
-                </Provider>, document.getElementById('root'));
+    });
+} else {
+    ReactDOM.render(<Provider store={store}>
+        <App store={store} />
+    </Provider>, document.getElementById('root'));
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
