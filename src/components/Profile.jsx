@@ -12,13 +12,15 @@ class Profile extends React.Component {
             email : "",
             phone : "",
             type : "",
-            password : ""
+            password : "",
+            newPassword : "",
         };
         this.nameChangeHandler = this.nameChangeHandler.bind(this);
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
         this.phoneChangeHandler = this.phoneChangeHandler.bind(this);
         this.handleUpdateClick = this.handleUpdateClick.bind(this);
         this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
+        this.newPasswordChangeHandler = this.newPasswordChangeHandler.bind(this);
     }
 
     componentDidMount() { // password alone not updated from state because, we don't need to show the existing one.
@@ -52,6 +54,12 @@ class Profile extends React.Component {
     passwordChangeHandler(e) {
         this.setState({
             password : e.target.value
+        });
+    }
+
+    newPasswordChangeHandler(e) {
+        this.setState({
+            newPassword : e.target.value
         });
     }
 
@@ -97,11 +105,20 @@ class Profile extends React.Component {
                     </Form.Label>
                     <Form.Control type="text" placeholder="" required disabled value={this.state.type === 'c' ? "Customer" : "Owner" } />
                 </Form.Group>
-                <Form.Group controlId="formPassword">
+                <Form.Group controlId="formOldPassword">
                     <Form.Label >
-                        Password:
+                        Old Password:
                     </Form.Label>
                     <Form.Control type="password" placeholder="" required value={this.state.password} onChange={this.passwordChangeHandler} />
+                    <Form.Control.Feedback type="invalid">
+                        Please enter your Passsword
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="formNewPassword">
+                    <Form.Label >
+                        New Password:
+                    </Form.Label>
+                    <Form.Control type="password" placeholder="" required value={this.state.newPassword} onChange={this.newPasswordChangeHandler} />
                     <Form.Control.Feedback type="invalid">
                         Please enter your Passsword
                     </Form.Control.Feedback>
