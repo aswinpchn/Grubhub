@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import { connect } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
+import { updateTrigger } from '../actions/user-action';
 
 class Profile extends React.Component {
 
@@ -81,6 +82,14 @@ class Profile extends React.Component {
                         updateStatus : "Nothing has changed."
                     });
                 } else { // update.
+                    let user = {
+                        email : this.state.email,
+                        password : this.state.password,
+                        name : this.state.name,
+                        phone : this.state.phone,
+                        type : this.state.type,
+                    }
+                    this.props.updateTrigger(user);
                     this.setState({
                         updateStatus : "Success"
                     });
@@ -91,6 +100,14 @@ class Profile extends React.Component {
                         updateStatus : "Nothing has changed."
                     });
                 } else { // update.
+                    let user = {
+                        email : this.state.email,
+                        password : this.state.newPassword,
+                        name : this.state.name,
+                        phone : this.state.phone,
+                        type : this.state.type,
+                    }
+                    this.props.updateTrigger(user);
                     this.setState({
                         updateStatus : "Success"
                     });
@@ -181,4 +198,8 @@ const mapStateToProps = (state) => {
     };
 }
 
-export default connect (mapStateToProps)(Profile);
+const mapDispatchToProps = (dispatch) => ({
+     updateTrigger: (user) => dispatch(updateTrigger(user))
+});
+
+export default connect (mapStateToProps, mapDispatchToProps)(Profile);

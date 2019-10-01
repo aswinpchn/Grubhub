@@ -10,6 +10,17 @@ const getLogin = (username, password, type) => {
     });
 }
 
+const updateUser = (user) => {
+    axios.defaults.withCredentials = true;
+
+    return axios.post('http://localhost:3001/user/', {
+        email : user.email,
+        name : user.name,
+        password : user.password,
+        phone : user.phone,
+    });
+}
+
 const loginSuccess = (username, password, name, phone, type, image) => {
     return {
         type : 'LOGIN_SUCCESS',
@@ -27,6 +38,29 @@ const loginSuccess = (username, password, name, phone, type, image) => {
 const loginFailure = (error) => {
     return {
         type : 'LOGIN_FAILURE',
+        payload : {
+            error : error
+        }
+    }
+}
+
+const updateSuccess = (username, password, name, phone, type, image) => {
+    return {
+        type : 'UPDATE_SUCCESS',
+        payload : {
+            username : username,
+            password : password,
+            name : name,
+            phone : phone,
+            type : type,
+            image : image,
+        }
+    }
+}
+
+const updateFailure = (error) => {
+    return {
+        type : 'UPDATE_FAILURE',
         payload : {
             error : error
         }
@@ -55,3 +89,16 @@ export const loginTrigger = (username, password, type) => {
       });
     };
   }
+
+export const updateTrigger = (user) => {
+    console.log(user);
+    return dispatch => {
+        return updateUser(user).then(response => {
+            console.log(response);
+            dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "google.com"));
+        }).catch(error => {
+            console.log(error);
+            dispatch(updateFailure(error.response.statusText));
+        });
+      };
+}
