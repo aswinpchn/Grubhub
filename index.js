@@ -107,7 +107,7 @@ app.post('/user/login', (req, res) => {
       if(response[0].password !== req.body.password) {
         throw "invalid password";
       }
-      let c = {username : req.body.username, password : req.body.password, type : req.body.type};
+      let c = {username : req.body.email, password : req.body.password, type : req.body.type};
       res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
@@ -195,6 +195,21 @@ app.put('/user/ownerSignUp', (req, res) => {
       }
     });
   }
+});
+
+app.post('/user/', (req, res) => {
+  if(!req.body.name && !req.body.mail && !req.body.id) {
+    res.writeHead(500);
+    res.end("db error");
+  }
+  let responsePromise = dbCall(`update user set name='${req.body.name}', email='${req.body.email}', password='${req.body.password}', phone='${req.body.phone}' where id='${req.body.id}'`);
+  responsePromise.then((response) => {
+    res.writeHead(200);
+    res.end("success");
+  }).then((error) => {
+    res.writeHead(500);
+    res.end("db error");
+  });
 });
 
 app.listen(3001);
