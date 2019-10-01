@@ -2,11 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import profile from '../images/profile.svg';
 import { Dropdown } from 'react-bootstrap';
+import cookie from 'react-cookies';
 
 class Header extends React.Component {
     constructor(props) {
         super(props);
         this.renderProfile = this.renderProfile.bind(this);
+        this.logOutSelect = this.logOutSelect.bind(this);
+    }
+
+    logOutSelect () {
+        cookie.remove('cookie', { path: '/' });
     }
 
     renderProfile() {
@@ -19,7 +25,7 @@ class Header extends React.Component {
                         <Dropdown.Menu>
                             <Dropdown.Item href="#/profile">Profile</Dropdown.Item> {/* can use link also, link internally uses href */}
                             <Dropdown.Item>Orders</Dropdown.Item>
-                            <Dropdown.Item>Logout</Dropdown.Item>
+                            <Dropdown.Item href="#/login" onSelect={this.logOutSelect}>Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>;
             return d;

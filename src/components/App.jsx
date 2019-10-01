@@ -5,7 +5,6 @@ import Login from './Login';
 import SignUp from './SignUp';
 import Profile from './Profile';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import cookie from 'react-cookies';
 import { connect } from 'react-redux';
 
 function App(props) {
