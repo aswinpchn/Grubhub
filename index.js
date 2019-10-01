@@ -198,15 +198,15 @@ app.put('/user/ownerSignUp', (req, res) => {
 });
 
 app.post('/user/', (req, res) => {
-  if(!req.body.name && !req.body.mail && !req.body.id) {
+  if(!req.body.name && !req.body.mail) {
     res.writeHead(500);
     res.end("db error");
   }
-  let responsePromise = dbCall(`update user set name='${req.body.name}', email='${req.body.email}', password='${req.body.password}', phone='${req.body.phone}' where id='${req.body.id}'`);
+  let responsePromise = dbCall(`update user set name='${req.body.name}', password='${req.body.password}', phone='${req.body.phone}' where email='${req.body.email}'`);
   responsePromise.then((response) => {
     res.writeHead(200);
     res.end("success");
-  }).then((error) => {
+  }).then((error) => { // Failur only if DB is down, all validations are done front end.
     res.writeHead(500);
     res.end("db error");
   });
