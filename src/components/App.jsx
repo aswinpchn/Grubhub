@@ -6,29 +6,28 @@ import SignUp from './SignUp';
 import Profile from './Profile';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import cookie from 'react-cookies';
+import { connect } from 'react-redux';
 
 function App(props) {
-  let redirectVar = null;
-  if(cookie.load('cookie') && props.store.getState() && props.store.getState().user && props.store.getState().user.username !== "") {
-  } else {
-    redirectVar = <Redirect to='/login' />
-  }
+  //console.log(props.user);
   
   return (
     <Router>
-      {redirectVar}
           <Switch>
             <Route exact path='/' render={() => (<Redirect to="/login" />)} />
             <Route path='/login/:type' component={Login} />
             <Route path='/login' component={Login} />
-             <Route path='/home' component={Home} /> 
-             {/* Tried to use render attrinute in route to put if-else case inside it, it caused inifnite loop while rendering */}
+             <Route path='/home' render={() => props.user && props.user.username !== "" ? <Home /> :(<Redirect to="/login" />)} /> 
             <Route path='/create-account/:type' component={SignUp} />
             <Route path='/create-account' component={SignUp} />
-            <Route path='/profile' component={Profile} />
+            <Route path='/profile' render={() => props.user && props.user.username !== "" ? <Profile /> :(<Redirect to="/login" />)} />
           </Switch>
     </Router>
   );
 }
 
-export default App;
+let mapStateToProps = (state) => {
+  return {user : state.user}
+};
+
+export default connect(mapStateToProps)(App);
