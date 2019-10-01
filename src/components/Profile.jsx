@@ -45,7 +45,7 @@ class Profile extends React.Component {
 
     phoneChangeHandler(e) {
         this.setState({
-            name : e.target.value
+            phone : e.target.value
         });
     }
 
@@ -101,7 +101,10 @@ class Profile extends React.Component {
                     <Form.Label >
                         Password:
                     </Form.Label>
-                    <Form.Control type="text" placeholder="" required value={this.state.password} onChange={this.passwordChangeHandler} />
+                    <Form.Control type="password" placeholder="" required value={this.state.password} onChange={this.passwordChangeHandler} />
+                    <Form.Control.Feedback type="invalid">
+                        Please enter your Passsword
+                    </Form.Control.Feedback>
                 </Form.Group>
                 <div className="form-buttons">
                     <Button className="form-profile-update-buttons" variant="info" type="submit" onClick={this.handleUpdateClick}>Update</Button>
@@ -112,6 +115,7 @@ class Profile extends React.Component {
     }
 
     render() {
+        console.log(this.state);
         return(
             <div className="profile">
                 <Header userDetails={this.props.user} />
