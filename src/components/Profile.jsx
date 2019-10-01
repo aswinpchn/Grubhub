@@ -14,6 +14,7 @@ class Profile extends React.Component {
             type : "",
             password : "",
             newPassword : "",
+            updateStatus : "",
         };
         this.nameChangeHandler = this.nameChangeHandler.bind(this);
         this.emailChangeHandler = this.emailChangeHandler.bind(this);
@@ -65,12 +66,44 @@ class Profile extends React.Component {
 
     handleUpdateClick(event) {
         event.preventDefault();
+        this.setState({
+            updateStatus : ""
+        });
 
+        if(this.state.password !== this.props.user.password) { // Not-Autheticated
+            this.setState({
+                updateStatus : "current password doesn't match with one in DB"
+            });
+        } else { // Authenticated
+            if(!this.state.newPassword) { // No need of updating password
+                if(this.state.name === this.props.user.name && this.state.phone === this.props.user.phone) {
+                    this.setState({
+                        updateStatus : "Nothing has changed."
+                    });
+                } else { // update.
+                    this.setState({
+                        updateStatus : "Success"
+                    });
+                }
+            } else { // updating the password
+                if(this.state.name === this.props.user.name && this.state.phone === this.props.user.phone && this.state.newPassword === this.props.user.password) {
+                    this.setState({
+                        updateStatus : "Nothing has changed."
+                    });
+                } else { // update.
+                    this.setState({
+                        updateStatus : "Success"
+                    });
+                }
+            }
+            
+        }
     }
 
     renderProfile() {
         return(
         <div>
+            {this.state.updateStatus}
             <Form className="user-details">
                 <Form.Group controlId="formName">
                     <Form.Label >
@@ -107,7 +140,7 @@ class Profile extends React.Component {
                 </Form.Group>
                 <Form.Group controlId="formOldPassword">
                     <Form.Label >
-                        Old Password:
+                        Password:(To make changes)
                     </Form.Label>
                     <Form.Control type="password" placeholder="" required value={this.state.password} onChange={this.passwordChangeHandler} />
                     <Form.Control.Feedback type="invalid">
@@ -116,7 +149,7 @@ class Profile extends React.Component {
                 </Form.Group>
                 <Form.Group controlId="formNewPassword">
                     <Form.Label >
-                        New Password:
+                        New Password:(Enter both if you want to change password, or don't enter any)
                     </Form.Label>
                     <Form.Control type="password" placeholder="" required value={this.state.newPassword} onChange={this.newPasswordChangeHandler} />
                     <Form.Control.Feedback type="invalid">
@@ -124,7 +157,7 @@ class Profile extends React.Component {
                     </Form.Control.Feedback>
                 </Form.Group>
                 <div className="form-buttons">
-                    <Button className="form-profile-update-buttons" variant="info" type="submit" onClick={this.handleUpdateClick}>Update</Button>
+                    <Button className="form-profile-update-buttons" variant="info" type="submit" disabled={!this.state.name || !this.state.phone || !this.state.password} onClick={this.handleUpdateClick}>Update</Button>
                 </div>
             </Form>
         </div>   
@@ -132,7 +165,7 @@ class Profile extends React.Component {
     }
 
     render() {
-        console.log(this.state);
+        //console.log(this.state);
         return(
             <div className="profile">
                 <Header userDetails={this.props.user} />
