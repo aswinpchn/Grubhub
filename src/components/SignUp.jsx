@@ -203,7 +203,7 @@ class SignUp extends React.Component {
         }
         return (
             <div className="sign-up">
-                <Header userDetails={{}} />
+                <Header />
                 {componentToBeRendered}
             </div>
         );
