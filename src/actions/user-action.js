@@ -22,7 +22,7 @@ const updateUser = (user) => {
     });
 }
 
-const loginSuccess = (username, password, name, phone, type, image) => {
+const loginSuccess = (username, password, name, phone, type, image, id) => {
     return {
         type : 'LOGIN_SUCCESS',
         payload : {
@@ -32,6 +32,7 @@ const loginSuccess = (username, password, name, phone, type, image) => {
             phone : phone,
             type : type,
             image : image,
+            id : id,
         }
     }
 }
@@ -45,7 +46,7 @@ const loginFailure = (error) => {
     }
 }
 
-const updateSuccess = (username, password, name, phone, type, image) => {
+const updateSuccess = (username, password, name, phone, type, image, id) => {
     return {
         type : 'UPDATE_SUCCESS',
         payload : {
@@ -55,6 +56,7 @@ const updateSuccess = (username, password, name, phone, type, image) => {
             phone : phone,
             type : type,
             image : image,
+            id : id,
         }
     }
 }
@@ -83,7 +85,7 @@ const dbProcessEnded = () => {
 export const loginTrigger = (username, password, type) => {
     return dispatch => {
       return getLogin(username, password, type).then(response => {
-          dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image));
+          dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data.id));
       }).catch(error => {
           console.log(error);
           dispatch(loginFailure(error.response.statusText));
@@ -96,7 +98,7 @@ export const updateTrigger = (user) => {
     return dispatch => {
         return updateUser(user).then(response => {
             console.log(response);
-            dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "google.com"));
+            dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "http://google.com", user.id));
         }).catch(error => {
             console.log(error);
             dispatch(updateFailure(error.response.statusText));

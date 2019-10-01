@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import { connect } from 'react-redux';
+import { restaurantFetchTrigger } from  './../actions/restaurant-action';
 
 class Home extends React.Component {
 
@@ -9,6 +10,13 @@ class Home extends React.Component {
         this.state = {
             email: ''
         }
+        
+    }
+
+    componentDidMount() {
+        if(this.props.user.type === 'c')
+            if(this.props.user.id)
+                this.props.restaurantFetchTrigger(this.props.user.id);
     }
 
     render() {
@@ -22,8 +30,13 @@ class Home extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user : state.user
+        user : state.user,
+        restaurant : state.restaurant, // We are reading it here still we make a page for restaurant iteslf.
     };
 }
 
-export default connect (mapStateToProps)(Home);
+const mapDispatchToProps = (dispatch) => ({
+    restaurantFetchTrigger: (ownerid) => dispatch(restaurantFetchTrigger(ownerid))
+});
+
+export default connect (mapStateToProps, mapDispatchToProps)(Home);

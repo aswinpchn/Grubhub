@@ -15,6 +15,7 @@ class Profile extends React.Component {
             type : "",
             password : "",
             newPassword : "",
+            id : "",
             updateStatus : "",
         };
         this.nameChangeHandler = this.nameChangeHandler.bind(this);
@@ -32,6 +33,7 @@ class Profile extends React.Component {
                 email : this.props.user.username,
                 phone : this.props.user.phone,
                 type : this.props.user.type,
+                id : this.props.user.id,
             });
     }
 
@@ -88,6 +90,7 @@ class Profile extends React.Component {
                         name : this.state.name,
                         phone : this.state.phone,
                         type : this.state.type,
+                        id : this.state.id,
                     }
                     this.props.updateTrigger(user);
                     this.setState({
@@ -106,6 +109,7 @@ class Profile extends React.Component {
                         name : this.state.name,
                         phone : this.state.phone,
                         type : this.state.type,
+                        id : this.state.id,
                     }
                     this.props.updateTrigger(user);
                     this.setState({

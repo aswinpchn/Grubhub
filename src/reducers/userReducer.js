@@ -19,6 +19,7 @@ const userReducer = (state = initialState, action) => {
                 phone : action.payload.phone,
                 type : action.payload.type,
                 image : action.payload.image,
+                id : action.payload.id,
                 error : '',
                 dbprocess : false,
             });
@@ -31,6 +32,7 @@ const userReducer = (state = initialState, action) => {
                 phone : '',
                 type : '',
                 image : '',
+                id : '',
                 dbprocess : false
             });
         case 'UPDATE_SUCCESS' : 
@@ -41,6 +43,7 @@ const userReducer = (state = initialState, action) => {
                 phone : action.payload.phone,
                 type : action.payload.type,
                 image : action.payload.image,
+                id : action.payload.id,
                 error : '',
                 dbprocess : false,
             });

@@ -10,11 +10,13 @@ import thunk from 'redux-thunk';
 import userReducer from './reducers/userReducer';
 import cookie from 'react-cookies';
 import { loginTrigger } from './actions/user-action';
+import restaurantReducer from './reducers/restaurantReducer';
 
 // It will come once you come through the URL, when you start from a point and continue through redirects/links, this wont be triggered.
 
 const rootReducer = combineReducers ({
-    user : userReducer
+    user : userReducer,
+    restaurant : restaurantReducer,
 });
 
 const store = createStore(
