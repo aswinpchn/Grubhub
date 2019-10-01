@@ -18,6 +18,7 @@ const updateUser = (user) => {
         name : user.name,
         password : user.password,
         phone : user.phone,
+        type : user.type,
     });
 }
 
