@@ -27,7 +27,7 @@ app.use(function(req, res, next) {
 });
 
 var connection = mysql.createConnection({
-  host     : 'localhost',
+  host     : 'grubhub.cwotr7vrym6h.us-west-1.rds.amazonaws.com',
   user     : 'root',
   password : '12345678',
   database : 'grubhub' 
@@ -212,6 +212,38 @@ app.post('/user/', (req, res) => {
     res.writeHead(500);
     res.end("db error");
   });
+});
+
+app.get('/restaurant/:id', (req, res) => {
+  if(!req.params.id)
+  {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let user = req.params.id;
+
+    let responsePromise = dbCall(`select * from restaurant where ownerid=${user}`);
+    responsePromise.then((response) => {
+
+      if(response.length !== 1) {
+        throw "no restaurant";
+      }
+
+      res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
+        'Content-type' : 'application/json'
+      });
+      res.end(JSON.stringify(response[0]));    // We can't send JSON directly we have to change it to string using stringify
+
+    }).catch((error) => {
+      if(error == "no restaurant") {
+        res.writeHead(404);
+        res.end("restaurant not found");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
+      }
+    });
+  }
 });
 
 app.listen(3001);
