@@ -246,5 +246,25 @@ app.get('/restaurant/:id', (req, res) => {
   }
 });
 
+app.post('/menu/', (req, res) => { // Added to menu.
+  if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.body.restaurantid) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let insertUserResponse = dbCall(`insert into menu values (NULL, 1,  '${req.body.category}', '${req.body.name}', '${req.body.description}', 'http://google.com', '${req.body.price}', ${req.body.restaurantid})`);
+    insertUserResponse.then((response) => {
+      if(response.affectedRows == 1) {
+        res.writeHead(200);
+        res.end("success");
+      } else {
+        throw "db error";
+      }
+    }).catch((error) => {
+      res.writeHead(500);
+      res.end("db error");
+    });
+  }
+});
+
 app.listen(3001);
 console.log("Server Listening on port 3001");
