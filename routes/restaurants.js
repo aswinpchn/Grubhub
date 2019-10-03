@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper'); 
 
-router.get('/owner/:id', (req, res) => {
+router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
     if(!req.params.id)
     {
         res.writeHead(400);
@@ -34,7 +34,7 @@ router.get('/owner/:id', (req, res) => {
     }
 });
 
-router.put('/:restaurantid/menu', (req, res) => { // Added to menu.
+router.put('/:restaurantid/menu', (req, res) => { // Add item to menu.
     if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.params.restaurantid) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -75,7 +75,7 @@ router.post('/:restaurantid/menu', (req, res) => { // Update a menu item.
     }
 });
 
-router.get('/search/:keyword', (req, res) => {
+router.get('/search/:keyword', (req, res) => { // Search restaurant by item name
     if(!req.params.keyword) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -93,7 +93,7 @@ router.get('/search/:keyword', (req, res) => {
     }
 });
 
-router.get('/', (req, res) => {
+router.get('/', (req, res) => { // Get all restaurants.
   const responsePromise = dbCall(`SELECT * FROM grubhub.restaurant LIMIT 100`);
   responsePromise.then((response) => {
     res.writeHead(200, {

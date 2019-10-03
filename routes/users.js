@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper'); 
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => { // get user by id
   
     if(!req.params.id)
     {
@@ -35,7 +35,7 @@ router.get('/:id', (req, res) => {
     }
   });
   
-  router.post('/login', (req, res) => {
+  router.post('/login', (req, res) => { // Login
     if(!req.body.email || !req.body.password || !req.body.type) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -78,7 +78,7 @@ router.get('/:id', (req, res) => {
     }
   });
   
-  router.put('/customerSignUp', (req, res) => {
+  router.put('/customerSignUp', (req, res) => { // Customer SignUp
     if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -111,7 +111,7 @@ router.get('/:id', (req, res) => {
     }
   });
   
-  router.put('/ownerSignUp', (req, res) => {
+  router.put('/ownerSignUp', (req, res) => { // Owner SignUp
     if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -144,7 +144,7 @@ router.get('/:id', (req, res) => {
     }
   });
   
-  router.post('/', (req, res) => {
+  router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
     if(!req.body.name && !req.body.email) {
       res.writeHead(500);
       res.end("db error");
