@@ -287,5 +287,23 @@ app.post('/menu/', (req, res) => { // Update a menu item.
   }
 });
 
+app.post('/restaurant/search/', (req, res) => {
+  if(!req.body.searchString) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let responsePromise = dbCall(`SELECT * FROM grubhub.restaurant INNER JOIN (select restaurantid from grubhub.menu where name like '%${req.body.searchString}%' group by restaurantid) as menu ON grubhub.restaurant.id = menu.restaurantid`);
+    responsePromise.then((response) => {
+      res.writeHead(200, {
+        'Content-type' : 'application/json'
+      });
+      res.end(JSON.stringify(response));
+    }).catch((error) => {
+      res.writeHead(500);
+      res.end("db error");
+    });
+  }
+});
+
 app.listen(3001);
 console.log("Server Listening on port 3001");
