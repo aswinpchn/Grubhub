@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './Header';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getField } from '../utils';
 import { connect } from 'react-redux';
@@ -105,15 +105,21 @@ class Login extends React.Component {
         } else {
             componentToBeRendered = this.renderLoginForm();
         }
+        let errorMessage = <div className="error"></div>;
+        if(this.props.user.error) {
+            errorMessage = <Alert className="error" variant='danger'>
+                Username or password incorrect
+            </Alert>
+        }
         return(
-            <div>
+            <>
                 {redirectVar}
                 <div className="login">
                     <Header />
-                    <p>{this.props.user.error}</p>
+                    {errorMessage}
                     {componentToBeRendered}
                 </div>
-            </div>    
+            </>    
         )
     }
 }

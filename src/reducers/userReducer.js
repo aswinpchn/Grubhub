@@ -20,6 +20,7 @@ const userReducer = (state = initialState, action) => {
                 type : action.payload.type,
                 image : action.payload.image,
                 id : action.payload.id,
+                zipCode: action.payload.zipCode,
                 error : '',
                 dbprocess : false,
             });

@@ -83,6 +83,9 @@ html, body, #root {
 .login-form, .signup-form {
   align-self: center;
   width: 60%;
+}
+
+.signup-form {
   margin-top: 10rem;
 }
 
@@ -101,4 +104,45 @@ html, body, #root {
 
 .user-type {
   text-transform: capitalize;
+}
+
+.error {
+  margin-top: 10rem;
+  width: 50%
+}
+
+
+.loader {
+  width: auto;
+  height: 100vh;
+  min-height: 500px;
+  background-image: url('../images/loader.gif');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.card {
+  width: 90%;
+  align-self: center;
+  height: 5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+.search-input {
+  width: 90% !important; 
+  align-self: center !important;
+  margin-top: 1rem !important;
+}
+
+.alert {
+  width: 50%;
+  align-self: center;
+  margin-top: 1rem;
+}
+
+.heading {
+  margin-left: 6rem;
+  margin-top: 3rem;
 }

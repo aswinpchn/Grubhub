@@ -1,13 +1,4 @@
-const initialState = { 
-    name : '',
-    zip : '',
-    error : '',
-    cuisine : '',
-    id : '',
-    ownerid : '',
-};
-
-const restaurantReducer = (state = initialState, action) => {
+const restaurantReducer = (state = {}, action) => {
     switch(action.type) {
         case 'RESTAURANT_FETCH_SUCCESS' : 
             return Object.assign({}, state, {
@@ -27,6 +18,24 @@ const restaurantReducer = (state = initialState, action) => {
                 ownerid : '',
                 error : action.payload.error,
               });
+        case 'FETCH_TOP_RESTAURANTS_SUCCESS': {
+            return Object.assign({}, state, {
+                restaurants: action.payload.restaurants,
+                foundMatching: false,
+            })
+        }
+        case 'FETCH_MATCHING_RESTAURANTS_SUCCESS':
+            return Object.assign({}, state, {
+                restaurants: action.payload.restaurants,
+                error: '',
+                foundMatching: true,
+            })
+        case 'FETCH_TOP_RESTAURANTS_FAILURE':
+        case 'FETCH_MATCHING_RESTAURANTS_FAILURE':
+            return Object.assign({}, state, {
+                restaurants: [],
+                error: action.payload.error
+            })
         default :
             return state;
     }

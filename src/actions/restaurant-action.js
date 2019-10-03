@@ -1,8 +1,16 @@
 import axios from 'axios';
 
 const tryFetchingRestaurant = (ownerid) => {
-    return axios.get(`http://localhost:3001/restaurant/${ownerid}`);
+    return axios.get(`http://localhost:3001/restaurants/${ownerid}`);
 };
+
+const tryFetchingMatchingRestaurants = (keyword) => {
+    return axios.get(`http://localhost:3001/restaurant/search/${keyword}`);
+}
+
+const tryFetchTopRestaurants = (keyword) => {
+    return axios.get(`http://localhost:3001/restaurant`);
+}
 
 const fetchingRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {
     return {
@@ -26,7 +34,42 @@ const fetchingRestaurantFailure = (error) => {
     }
 }
 
+const fetchMatchingRestaurantsSuccess = (restaurants) => {
+    return {
+        type: 'FETCH_MATCHING_RESTAURANTS_SUCCESS',
+        payload: {
+            restaurants: restaurants
+        }
+    }
+}
 
+const fetchMatchingRestaurantsFailure = () => {
+    console.log("error inside");
+    return {
+        type: 'FETCH_MATCHING_RESTAURANTS_FAILURE',
+        payload: {
+            error: 'No restaurants found!'
+        }
+    }
+}
+
+const fetchTopRestaurantsSuccess = (restaurants) => {
+    return {
+        type: 'FETCH_TOP_RESTAURANTS_SUCCESS',
+        payload: {
+            restaurants: restaurants
+        }
+    }
+}
+
+const fetchTopRestaurantsFailure = () => {
+    return {
+        type: 'FETCH_TOP_RESTAURANTS_FAILURE',
+        payload: {
+            error: 'Something Went Wrong!'
+        }
+    }
+}
 
 export const restaurantFetchTrigger = (ownerid) => {
     return dispatch => {
@@ -37,3 +80,27 @@ export const restaurantFetchTrigger = (ownerid) => {
       });
     };
   }
+
+export const fetchTopRestaurantsTrigger = () => {
+    return dispatch => {
+        return tryFetchTopRestaurants().then(response => {
+            dispatch(fetchTopRestaurantsSuccess(response.data))
+        }).catch(() => {
+            dispatch(dispatch(fetchTopRestaurantsFailure()))
+        });
+    }
+}
+
+export const fetchMatchingRestaurantsTrigger = (keyword) => {
+    return dispatch => {
+        return tryFetchingMatchingRestaurants(keyword).then(response => {
+            if(response.data.length == 0) {
+                dispatch(fetchMatchingRestaurantsFailure())
+                dispatch(fetchTopRestaurantsTrigger())
+            } else
+                dispatch(fetchMatchingRestaurantsSuccess(response.data))
+        }).catch(() => {
+            dispatch(fetchMatchingRestaurantsFailure())
+        });
+    }
+}
