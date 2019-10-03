@@ -246,7 +246,7 @@ app.get('/restaurant/:id', (req, res) => {
   }
 });
 
-app.post('/menu/', (req, res) => { // Added to menu.
+app.put('/menu/', (req, res) => { // Added to menu.
   if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.body.restaurantid) {
     res.writeHead(400);
     res.end("wrong parameters");
