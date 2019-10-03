@@ -266,5 +266,26 @@ app.put('/menu/', (req, res) => { // Added to menu.
   }
 });
 
+app.post('/menu/', (req, res) => { // Update a menu item.
+  if(!req.body.id) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let responsePromise = dbCall(`update menu set category='${req.body.category}', name='${req.body.name}', description='${req.body.description}', price='${req.body.price}', restaurantid='${req.body.restaurantid}' where id=${req.body.id}`);
+    responsePromise.then((response) => {
+      let getUpdatedItem = dbCall(`select * from menu where id=${req.body.id}`);
+      getUpdatedItem.then((response) => {
+        res.writeHead(200, {
+          'Content-type' : 'application/json'
+        });
+        res.end(JSON.stringify(response[0]));
+      });
+    }).catch((error) => { // Failure only if DB is down, all validations are done front end.
+      res.writeHead(500);
+      res.end("db error");
+    });
+  }
+});
+
 app.listen(3001);
 console.log("Server Listening on port 3001");
