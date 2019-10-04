@@ -29,6 +29,7 @@ app.use(function(req, res, next) {
 
 app.use('/user', usersRoute);
 app.use('/restaurant', restaurantsRoute);
+app.use('/order', ordersRoute);
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
