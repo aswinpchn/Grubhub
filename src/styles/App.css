@@ -30,7 +30,7 @@ html, body, #root {
 }
 
 .App-link {
-  color: #09d3ac;
+  color: #00b4d2;
 }
 
 .home, .login, .sign-up {
@@ -145,4 +145,46 @@ html, body, #root {
 .heading {
   margin-left: 6rem;
   margin-top: 3rem;
+}
+
+.item-list {
+  max-height: 20rem;
+  overflow-y: auto;
+  align-self: flex-end;
+  width: 88%;
+  margin-right: 5rem;
+  background-color: #eeeeef;
+  padding-left: 7rem;
+}
+
+.category-header {
+  padding-top: 1rem;
+  text-transform: capitalize;
+}
+
+.item-card {
+  flex-direction: row;
+  display: flex;
+}
+
+.item-name {
+  flex: 0.95;
+}
+
+div.mb-2.text-muted.item-details.card-subtitle.h6 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.quantity {
+  align-self: center;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.material-icons {
+  vertical-align: text-bottom;
+  color: #007bff;
 }

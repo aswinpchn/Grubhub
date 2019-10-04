@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const tryFetchingRestaurant = (ownerid) => {
-    return axios.get(`http://localhost:3001/restaurants/${ownerid}`);
+const tryFetchingOwnedRestaurant = (ownerid) => {
+    return axios.get(`http://localhost:3001/restaurant/owner/${ownerid}`);
 };
 
 const tryFetchingMatchingRestaurants = (keyword) => {
@@ -12,7 +12,15 @@ const tryFetchTopRestaurants = (keyword) => {
     return axios.get(`http://localhost:3001/restaurant`);
 }
 
-const fetchingRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {
+const tryFetchingOrdersForRestaurant = (restaurantId) => {
+    return axios.get(`http://localhost:3001/restaurant`);
+}
+
+const tryFetchingItems = (restaurantId) => {
+    return axios.get(`http://localhost:3001/restaurant/${restaurantId}/menu`);
+}
+
+const fetchingOwnedRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {
     return {
         type : 'RESTAURANT_FETCH_SUCCESS',
         payload : {
@@ -25,11 +33,11 @@ const fetchingRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {
     }
 }
 
-const fetchingRestaurantFailure = (error) => {
+const fetchingOwnedRestaurantFailure = (error) => {
     return {
         type : 'RESTAURANT_FETCH_FAILURE',
         payload : {
-            error : error
+            error : 'Something went wrong! Pleasw try again later'
         }
     }
 }
@@ -62,6 +70,17 @@ const fetchTopRestaurantsSuccess = (restaurants) => {
     }
 }
 
+const fetchItemsSuccess = (items) => {
+    console.log(items);
+    return {
+        type: 'FETCH_ITEMS_SUCCESS',
+        payload: {
+            restaurantId: items[0].restaurantid,
+            items: items
+        }
+    }
+}
+
 const fetchTopRestaurantsFailure = () => {
     return {
         type: 'FETCH_TOP_RESTAURANTS_FAILURE',
@@ -71,12 +90,27 @@ const fetchTopRestaurantsFailure = () => {
     }
 }
 
-export const restaurantFetchTrigger = (ownerid) => {
+const fetchItemsFailure = () => {
+    return {
+        type: 'FETCH_ITEMS_FAILURE',
+        payload: {
+            error: 'Restaurant not serving at the moment! Please try later'
+        }
+    }
+}
+
+const closeItemsTrigger = () => {
+    return {
+        type: 'CLOSE_ITEMS',
+    }
+}
+
+export const fetchOwnedRestaurantTrigger = (ownerid) => {
     return dispatch => {
-      return tryFetchingRestaurant(ownerid).then(response => {
-          dispatch(fetchingRestaurantSuccess(response.data.id, response.data.name, response.data.zip, response.data.cuisine, ownerid));
+      return tryFetchingOwnedRestaurant(ownerid).then(response => {
+          dispatch(fetchingOwnedRestaurantSuccess(response.data.id, response.data.name, response.data.zip, response.data.cuisine, ownerid));
       }).catch(error => {
-          dispatch(fetchingRestaurantFailure(error.response.statusText));
+          dispatch(fetchingOwnedRestaurantFailure(error.response.statusText));
       });
     };
   }
@@ -94,7 +128,7 @@ export const fetchTopRestaurantsTrigger = () => {
 export const fetchMatchingRestaurantsTrigger = (keyword) => {
     return dispatch => {
         return tryFetchingMatchingRestaurants(keyword).then(response => {
-            if(response.data.length == 0) {
+            if(response.data.length === 0) {
                 dispatch(fetchMatchingRestaurantsFailure())
                 dispatch(fetchTopRestaurantsTrigger())
             } else
@@ -102,5 +136,25 @@ export const fetchMatchingRestaurantsTrigger = (keyword) => {
         }).catch(() => {
             dispatch(fetchMatchingRestaurantsFailure())
         });
+    }
+}
+
+export const fetchItemsTrigger = (restaurantId) => {
+    return dispatch => {
+        return tryFetchingItems(restaurantId).then(response => {
+            if(response.data.length === 0) {
+                dispatch(fetchItemsFailure())
+            } else
+                dispatch(fetchItemsSuccess(response.data))
+        }).catch((error) => {
+            console.log(error);
+            dispatch(fetchItemsFailure())
+        })
+    }
+}
+
+export const triggerCloseItems = () => {
+    return dispatch => {
+        dispatch(closeItemsTrigger())
     }
 }

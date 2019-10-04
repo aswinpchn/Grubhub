@@ -19,7 +19,7 @@ class Header extends React.Component {
 
         if(this.props && this.props.userDetails && this.props.userDetails.name !== '') {
             let d = <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
                             Hi {this.props.userDetails.name}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>

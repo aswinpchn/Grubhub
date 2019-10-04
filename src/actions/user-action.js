@@ -88,7 +88,7 @@ export const loginTrigger = (username, password, type) => {
           dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data.id));
       }).catch(error => {
           console.log(error);
-          dispatch(loginFailure(error.response.statusText));
+          dispatch(loginFailure('Something went wrong! Please try again later'));
       });
     };
   }
@@ -101,7 +101,7 @@ export const updateTrigger = (user) => {
             dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "http://google.com", user.id));
         }).catch(error => {
             console.log(error);
-            dispatch(updateFailure(error.response.statusText));
+            dispatch(updateFailure('Something went wrong! Please try again later'));
         });
       };
 }

@@ -36,6 +36,17 @@ const restaurantReducer = (state = {}, action) => {
                 restaurants: [],
                 error: action.payload.error
             })
+        case 'FETCH_ITEMS_SUCCESS':
+            return Object.assign({}, state, {
+                selectedRestaurant: {
+                    restaurantId: action.payload.restaurantId,
+                    items: action.payload.items
+                }
+            })
+        case 'CLOSE_ITEMS':
+            return Object.assign({}, state, {
+                selectedRestaurant: {}
+            })
         default :
             return state;
     }
