@@ -12,7 +12,7 @@ router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
             if(response.insertId && response.insertId != NaN) {
                 let orderid = response.insertId;
                 let itemsValidity = req.body.items.every((element) => {
-                                        if(!element.menuid) {
+                                        if(!element.menuid || element.quantity <= 0 || element.quantity == NaN) {
                                             return false;
                                         }
                                         return true;
@@ -27,14 +27,13 @@ router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
                         selectResponse[i] = dbCall(`select * from menu where id=${element.menuid}`);
                         i++;
                     });
-                
                     Promise.all(selectResponse).then((response) => { //Promise.all is mysterious, look into it.
                         fullMenuDetails = response
                         //console.log(fullMenuDetails[1][0]);
                         let insertResponse = [];
                         let i = 0;
                         fullMenuDetails.forEach(element => {
-                            insertResponse[i] = dbCall(`insert into orderdetails values(NULL, ${orderid}, '${element[0].category}', '${element[0].name}', '${element[0].description}', 'http://google.com', ${element[0].price})`);
+                            insertResponse[i] = dbCall(`insert into orderdetails values(NULL, ${orderid}, '${element[0].category}', '${element[0].name}', '${element[0].description}', 'http://google.com', ${element[0].price}, ${req.body.items[i].quantity})`);
                             i++;
                         });
                         Promise.all(insertResponse).then((response) => {
