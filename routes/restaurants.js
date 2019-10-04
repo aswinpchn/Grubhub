@@ -106,4 +106,77 @@ router.get('/', (req, res) => { // Get all restaurants.
   });
 });
 
+router.get('/:restaurantid/orders', (req, res) => {
+  if(!req.params.restaurantid) {
+    res.writeHead(400);
+    res.send('wrong paramaters');
+  } else {
+    let responsePromise = dbCall(`select * from grubhub.order where restaurantid_order=${req.params.restaurantid}`);
+    responsePromise.then(orderResponse=> {
+      let result = {
+        numberoforders : 0
+      };
+      if(orderResponse.length == 0) {
+        res.writeHead(200, {
+          'Content-type' : 'application/json'
+        });
+        res.end(JSON.stringify(result));
+      } else {
+        let i = 0;
+        result.numberoforders = orderResponse.length;
+        let customerFetchPromise = [];
+        
+        result.orders = [];
+        orderResponse.forEach(element => {
+          result.orders[i] = {};
+          result.orders[i].cost = element.cost;
+          result.orders[i].status = element.status;
+          result.orders[i].ordertime = element.ordertime;
+          customerFetchPromise[i] = dbCall(`select * from user where id=${element.customerid_order}`);
+          i++; 
+        });
+        Promise.all(customerFetchPromise).then(response=>{
+          let j = 0;
+          response.forEach(element=>{
+            result.orders[j].customername = element[0].name;
+            result.orders[j].email = element[0].email;
+            result.orders[j].phone = element[0].phone;
+            result.orders[j].image = element[0].image;
+            j++;
+          });
+          
+          let k = 0;
+          let orderFetchPromise = [];
+          orderResponse.forEach(element => {
+            orderFetchPromise[k] = dbCall(`select * from orderdetails where orderid_orderdetails=${element.id}`);
+            k++; 
+          });
+          Promise.all(orderFetchPromise).then(response=>{
+            let m = 0;
+            response.forEach(element=>{
+              result.orders[m].menu = [];
+              Object.assign(result.orders[m].menu,{}, element);
+              m++;
+            });
+            res.writeHead(200, {
+              'Content-type' : 'application/json'
+            });
+            res.end(JSON.stringify(result));
+          }).catch(error=>{
+            res.writeHead(500);
+            res.send('db error');
+          });
+
+        }).catch(error=>{
+          res.writeHead(500);
+          res.send('db error');
+        });
+      }
+    }).catch(error=> {
+      res.writeHead(500);
+      res.send('db error');
+    });
+  }
+});
+
 module.exports = router;
