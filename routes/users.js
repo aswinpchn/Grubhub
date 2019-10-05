@@ -179,7 +179,7 @@ router.get('/:id', (req, res) => { // get user by id
         } else {
           let i = 0;
           result.numberoforders = orderResponse.length;
-          let customerFetchPromise = [];
+          let restaurantFetchPromise = [];
           
           result.orders = [];
           orderResponse.forEach(element => {
@@ -187,15 +187,15 @@ router.get('/:id', (req, res) => { // get user by id
             result.orders[i].cost = element.cost;
             result.orders[i].status = element.status;
             result.orders[i].ordertime = element.ordertime;
-            customerFetchPromise[i] = dbCall(`select * from user where id=${element.customerid_order}`);
+            restaurantFetchPromise[i] = dbCall(`select * from restaurant where id=${element.restaurantid_order}`);
             i++; 
           });
-          Promise.all(customerFetchPromise).then(response=>{
+          Promise.all(restaurantFetchPromise).then(response=>{
+            console.log(response);
             let j = 0;
             response.forEach(element=>{
-              result.orders[j].customername = element[0].name;
-              result.orders[j].email = element[0].email;
-              result.orders[j].phone = element[0].phone;
+              result.orders[j].restaurantname = element[0].name;
+              result.orders[j].cuisine = element[0].cuisine;
               result.orders[j].image = element[0].image;
               j++;
             });
