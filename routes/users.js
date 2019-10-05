@@ -191,7 +191,6 @@ router.get('/:id', (req, res) => { // get user by id
             i++; 
           });
           Promise.all(restaurantFetchPromise).then(response=>{
-            console.log(response);
             let j = 0;
             response.forEach(element=>{
               result.orders[j].restaurantname = element[0].name;
