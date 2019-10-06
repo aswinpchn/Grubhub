@@ -70,18 +70,6 @@ const updateFailure = (error) => {
     }
 }
 
-const dbProcessStarted = () => { // To maintain a state for tracking if any action is in process.
-    return {
-        type : 'DB_PROCESS_STARTED',
-    }
-}
-
-const dbProcessEnded = () => {
-    return {
-        type : 'DB_PROCESS_ENDED',
-    }
-}
-
 const logOutTrigger = () => {
     return {
         type : 'LOG_OUT'

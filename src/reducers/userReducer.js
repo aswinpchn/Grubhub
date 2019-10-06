@@ -6,7 +6,6 @@ const initialState = {
     phone : '',
     type : '',
     image : '',
-    dbprocess : false,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -22,7 +21,6 @@ const userReducer = (state = initialState, action) => {
                 id : action.payload.id,
                 zipCode: action.payload.zipCode,
                 error : '',
-                dbprocess : false,
             });
         case 'LOGIN_FAILURE' :
             return Object.assign({}, state, {
@@ -34,7 +32,6 @@ const userReducer = (state = initialState, action) => {
                 type : '',
                 image : '',
                 id : '',
-                dbprocess : false
             });
         case 'UPDATE_SUCCESS' : 
             return Object.assign({}, state, {
@@ -46,17 +43,11 @@ const userReducer = (state = initialState, action) => {
                 image : action.payload.image,
                 id : action.payload.id,
                 error : '',
-                dbprocess : false,
             });
         case 'UPDATE_FAILURE' :
             return Object.assign({}, state, {
                 error : action.payload.error,
-                dbprocess : false
-            });
-        case 'DB_PROCESS_STARTED' : 
-            return Object.assign({}, state, { dbprocess : true});
-        case 'DB_PROCESS_ENDED' : 
-            return Object.assign({}, state, { dbprocess : false});  
+            }); 
         case 'LOG_OUT':
                 return Object.assign({}, {})
         default:
