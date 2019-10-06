@@ -90,7 +90,7 @@ class Home extends React.Component {
             return(
                 <div className="home">
                     <Header userDetails={this.props.user} />
-                    <Form.Control type="text" placeholder="Search" className="search-input" onChange={this.searchRestaurant.bind(this)} />
+                    {this.props.user && this.props.user.type === 'c' ? (<Form.Control type="text" placeholder="Search" className="search-input" onChange={this.searchRestaurant.bind(this)} />) : ''}
                     {this.renderErrorMessage()}
                     <h2 className="heading">{this.props.user.type === 'o' ? 'Your restaurant' : (this.props.foundMatching ? 'Search Results' : 'Restaurants you may like') }</h2>
                     {this.renderRestaurantList()}
