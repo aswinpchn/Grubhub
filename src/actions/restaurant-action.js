@@ -1,23 +1,24 @@
 import axios from 'axios';
+import { URL } from '../constants';
 
 const tryFetchingOwnedRestaurant = (ownerid) => {
-    return axios.get(`http://localhost:3001/restaurant/owner/${ownerid}`);
+    return axios.get(`${URL}/restaurant/owner/${ownerid}`);
 };
 
 const tryFetchingMatchingRestaurants = (keyword) => {
-    return axios.get(`http://localhost:3001/restaurant/search/${keyword}`);
+    return axios.get(`${URL}/restaurant/search/${keyword}`);
 }
 
 const tryFetchTopRestaurants = (keyword) => {
-    return axios.get(`http://localhost:3001/restaurant`);
+    return axios.get(`${URL}/restaurant`);
 }
 
 const tryFetchingOrdersForRestaurant = (restaurantId) => {
-    return axios.get(`http://localhost:3001/restaurant`);
+    return axios.get(`${URL}/restaurant`);
 }
 
 const tryFetchingItems = (restaurantId) => {
-    return axios.get(`http://localhost:3001/restaurant/${restaurantId}/menu`);
+    return axios.get(`${URL}/restaurant/${restaurantId}/menu`);
 }
 
 const fetchingOwnedRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {

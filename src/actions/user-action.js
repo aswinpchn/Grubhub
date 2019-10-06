@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { URL } from '../constants';
 
 const getLogin = (username, password, type) => {
     axios.defaults.withCredentials = true;
-    
-    return axios.post('http://localhost:3001/user/login', {
+    return axios.post(`${URL}/user/login`, {
         email : username,
         password : password,
         type : type,
@@ -13,7 +13,7 @@ const getLogin = (username, password, type) => {
 const updateUser = (user) => {
     axios.defaults.withCredentials = true;
 
-    return axios.post('http://localhost:3001/user/', {
+    return axios.post(`${URL}/user/`, {
         email : user.email,
         name : user.name,
         password : user.password,
