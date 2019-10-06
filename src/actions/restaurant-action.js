@@ -21,15 +21,11 @@ const tryFetchingItems = (restaurantId) => {
     return axios.get(`${URL}/restaurant/${restaurantId}/menu`);
 }
 
-const fetchingOwnedRestaurantSuccess = (id, name, zip, cuisine, ownerid) => {
+const fetchingOwnedRestaurantSuccess = (restaurants) => {
     return {
         type : 'RESTAURANT_FETCH_SUCCESS',
         payload : {
-            name : name,
-            zip : zip,
-            cuisine : cuisine,
-            id : id,
-            ownerid : ownerid,
+            restaurants : restaurants
         }
     }
 }
@@ -108,7 +104,7 @@ const closeItemsTrigger = () => {
 export const fetchOwnedRestaurantTrigger = (ownerid) => {
     return dispatch => {
       return tryFetchingOwnedRestaurant(ownerid).then(response => {
-          dispatch(fetchingOwnedRestaurantSuccess(response.data.id, response.data.name, response.data.zip, response.data.cuisine, ownerid));
+          dispatch(fetchingOwnedRestaurantSuccess(response.data));
       }).catch(error => {
           dispatch(fetchingOwnedRestaurantFailure(error.response.statusText));
       });

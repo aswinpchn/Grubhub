@@ -2,11 +2,7 @@ const restaurantReducer = (state = {}, action) => {
     switch(action.type) {
         case 'RESTAURANT_FETCH_SUCCESS' : 
             return Object.assign({}, state, {
-                name : action.payload.name,
-                zip : action.payload.zip,
-                cuisine : action.payload.cuisine,
-                id : action.payload.id,
-                ownerid : action.payload.ownerid,
+                restaurants : action.payload.restaurants,
                 error : '',
             });
         case 'RESTAURANT_FETCH_FAILURE' :
