@@ -46,8 +46,8 @@ class Home extends React.Component {
             restaurants =
                 <><Card className="shadow bg-white rounded" key={this.props.restaurants.id} onClick={() => this.handleRestaurantSelect(this.props.restaurants.id)}>
                     <Card.Body>
-                        <Card.Title>{this.props.restaurants.name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{this.props.restaurants.cuisine}</Card.Subtitle>
+                        <Card.Title>Restaurant name : {this.props.restaurants.name}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">Cusinine : {this.props.restaurants.cuisine}</Card.Subtitle>
                     </Card.Body>
                 </Card>
                 {this.renderItems(this.props.restaurants.id)}
@@ -59,8 +59,8 @@ class Home extends React.Component {
                     <>
                         <Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant.id)}>
                             <Card.Body>
-                                <Card.Title>{restaurant.name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">{restaurant.cuisine}</Card.Subtitle>
+                                <Card.Title>Restaurant name : {restaurant.name}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">Cuisine : {restaurant.cuisine}</Card.Subtitle>
                             </Card.Body>
                         </Card>
                         {this.renderItems(restaurant.id)}
