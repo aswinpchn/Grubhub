@@ -82,6 +82,12 @@ const dbProcessEnded = () => {
     }
 }
 
+const logOutTrigger = () => {
+    return {
+        type : 'LOG_OUT'
+    }
+}
+
 export const loginTrigger = (username, password, type) => {
     return dispatch => {
       return getLogin(username, password, type).then(response => {
@@ -104,4 +110,10 @@ export const updateTrigger = (user) => {
             dispatch(updateFailure('Something went wrong! Please try again later'));
         });
       };
+}
+
+export const logOut = () => {
+    return dispatch => {
+        dispatch(logOutTrigger())
+    }
 }

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import profile from '../images/profile.svg';
 import { Dropdown } from 'react-bootstrap';
 import cookie from 'react-cookies';
+import { connect } from 'react-redux';
+import { logOut } from '../actions/restaurant-action'; // Importing one reducers action will be fine as when the action creater creates and dispatches an action, same action exists in mutiple reducers and all happends.
 
 class Header extends React.Component {
     constructor(props) {
@@ -13,6 +15,7 @@ class Header extends React.Component {
 
     logOutSelect () {
         cookie.remove('cookie', { path: '/' });
+        this.props.logOut();
     }
 
     renderProfile() {
@@ -45,4 +48,8 @@ class Header extends React.Component {
     }
 }
 
-export default Header;
+const mapDispatchToProps = (dispatch) => ({
+    logOut : () => dispatch(logOut())
+});
+
+export default connect (null, mapDispatchToProps)(Header);

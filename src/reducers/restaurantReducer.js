@@ -43,6 +43,8 @@ const restaurantReducer = (state = {}, action) => {
             return Object.assign({}, state, {
                 selectedRestaurant: {}
             })
+        case 'LOG_OUT':
+            return Object.assign({}, {})
         default :
             return state;
     }

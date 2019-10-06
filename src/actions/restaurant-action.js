@@ -101,6 +101,12 @@ const closeItemsTrigger = () => {
     }
 }
 
+const logOutTrigger = () => {
+    return {
+        type : 'LOG_OUT'
+    }
+}
+
 export const fetchOwnedRestaurantTrigger = (ownerid) => {
     return dispatch => {
       return tryFetchingOwnedRestaurant(ownerid).then(response => {
@@ -152,5 +158,11 @@ export const fetchItemsTrigger = (restaurantId) => {
 export const triggerCloseItems = () => {
     return dispatch => {
         dispatch(closeItemsTrigger())
+    }
+}
+
+export const logOut = () => {
+    return dispatch => {
+        dispatch(logOutTrigger())
     }
 }

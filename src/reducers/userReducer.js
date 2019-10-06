@@ -57,6 +57,8 @@ const userReducer = (state = initialState, action) => {
             return Object.assign({}, state, { dbprocess : true});
         case 'DB_PROCESS_ENDED' : 
             return Object.assign({}, state, { dbprocess : false});  
+        case 'LOG_OUT':
+                return Object.assign({}, {})
         default:
             return state;
     }
