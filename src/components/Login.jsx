@@ -94,9 +94,8 @@ class Login extends React.Component {
 
     render() {
         let redirectVar = null;
-
-        if(cookie.load('cookie')){
-            redirectVar = <Redirect to= "/home"/>  // /home route should be defined in index.js to be able for the application to know where to reload.
+        if(cookie.load('cookie') && this.props.user && this.props.user.username !== ""){
+            redirectVar = <Redirect to= "/home" user={this.props.user} />  // /home route should be defined in index.js to be able for the application to know where to reload.
         }
 
         let componentToBeRendered = null;

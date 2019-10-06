@@ -1,26 +1,25 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
+import restaurantReducer from './reducers/restaurantReducer';
+import userReducer from './reducers/userReducer';
+import thunk from 'redux-thunk';
 
-const todos = (state = [], action) => {
-    switch (action.type) {
-      case 'ADD_TODO':
-        console.log("Aswin inside store");
-        return [
-          ...state,
-          {
-            id: action.id,
-            text: action.text,
-            completed: false
-          }
-        ]
-      case 'TOGGLE_TODO':
-        return state.map(todo =>
-          (todo.id === action.id)
-            ? {...todo, completed: !todo.completed}
-            : todo
-        )
-      default:
-        return state
-    }
-  }
+const rootReducer = combineReducers ({
+    user : userReducer,
+    restaurant : restaurantReducer,
+});
 
-export const store = createStore(todos);
+export const store = createStore(
+    rootReducer, 
+    compose(
+        applyMiddleware(thunk),
+        window.devToolsExtension ? window.devToolsExtension() : f => f
+    )
+);
+
+// store.dispatch({
+//     type : 'LOGIN_SUCCESS',
+//     payload : {
+//         username : 'aswinp',
+//         password : '12345'
+//     }
+// });
