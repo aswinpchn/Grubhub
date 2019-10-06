@@ -71,13 +71,12 @@ const fetchTopRestaurantsSuccess = (restaurants) => {
     }
 }
 
-const fetchItemsSuccess = (items) => {
-    console.log(items);
+const fetchItemsSuccess = (response) => {
     return {
         type: 'FETCH_ITEMS_SUCCESS',
         payload: {
-            restaurantId: items[0].restaurantid,
-            items: items
+            restaurantId: response.items[0].restaurantId,
+            items: response.items
         }
     }
 }
