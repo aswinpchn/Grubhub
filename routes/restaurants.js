@@ -13,14 +13,14 @@ router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
         let responsePromise = dbCall(`select * from restaurant where ownerid=${user}`);
         responsePromise.then((response) => {
 
-            if(response.length !== 1) {
-                throw "no restaurant";
-            }
+          if(response.length !== 1) {
+              throw "no restaurant";
+          }
 
-        res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
-            'Content-type' : 'application/json'
-        });
-        res.end(JSON.stringify(response[0]));    // We can't send JSON directly we have to change it to string using stringify
+          res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
+              'Content-type' : 'application/json'
+          });
+          res.end(JSON.stringify(response[0]));    // We can't send JSON directly we have to change it to string using stringify
 
         }).catch((error) => {
             if(error == "no restaurant") {
