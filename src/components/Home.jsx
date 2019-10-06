@@ -40,18 +40,34 @@ class Home extends React.Component {
     }
 
     renderRestaurantList() {
-        const restaurants = this.props.restaurants.map((restaurant) => {
-            return (
-                <><Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant.id)}>
+
+        let restaurants = '';
+        if(this.props.user && this.props.user.type && this.props.user.type === 'o') {
+            restaurants =
+                <><Card className="shadow bg-white rounded" key={this.props.restaurants.id} onClick={() => this.handleRestaurantSelect(this.props.restaurants.id)}>
                     <Card.Body>
-                        <Card.Title>{restaurant.name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{restaurant.cuisine}</Card.Subtitle>
+                        <Card.Title>{this.props.restaurants.name}</Card.Title>
+                        <Card.Subtitle className="mb-2 text-muted">{this.props.restaurants.cuisine}</Card.Subtitle>
                     </Card.Body>
                 </Card>
-                {this.renderItems(restaurant.id)}
+                {this.renderItems(this.props.restaurants.id)}
                 </>
-            )
-        });
+        }
+        else {
+            restaurants = this.props.restaurants.map((restaurant) => {
+                return (
+                    <>
+                        <Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant.id)}>
+                            <Card.Body>
+                                <Card.Title>{restaurant.name}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">{restaurant.cuisine}</Card.Subtitle>
+                            </Card.Body>
+                        </Card>
+                        {this.renderItems(restaurant.id)}
+                    </>
+                )
+            });
+        }
         return restaurants;
     }
 
@@ -76,7 +92,7 @@ class Home extends React.Component {
                     <Header userDetails={this.props.user} />
                     <Form.Control type="text" placeholder="Search" className="search-input" onChange={this.searchRestaurant.bind(this)} />
                     {this.renderErrorMessage()}
-                    <h2 className="heading">{this.props.foundMatching ? 'Search Results' : 'Restaurants you may like'}</h2>
+                    <h2 className="heading">{this.props.user.type === 'o' ? 'Your restaurant' : (this.props.foundMatching ? 'Search Results' : 'Restaurants you may like') }</h2>
                     {this.renderRestaurantList()}
                 </div>
             );
