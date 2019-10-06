@@ -179,4 +179,22 @@ router.get('/:restaurantid/orders', (req, res) => {
   }
 });
 
+router.get('/:restaurantid/menu', (req, res) => {
+  if(!req.params.restaurantid) {
+    res.writeHead(400);
+    res.send('wrong paramaters');
+  } else {
+    let result = {};
+    let responsePromise = dbCall(`select restaurantId, active, category, menu.name, description, menu.image, price from grubhub.restaurant INNER JOIN
+    grubhub.menu on grubhub.restaurant.id=grubhub.menu.restaurantid where restaurantid=${req.params.restaurantid}`);
+    responsePromise.then(response => {
+      result.items = JSON.parse(JSON.stringify(response));
+      res.writeHead(200, {
+        'Content-type' : 'application/json'
+      });
+      res.end(JSON.stringify(result));
+    });
+  }
+});
+
 module.exports = router;
