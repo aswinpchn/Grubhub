@@ -9,7 +9,7 @@ import cookie from 'react-cookies';
 import { loginTrigger } from './actions/user-action';
 import { store } from './store';
 
-// It will come once you come through the URL, when you start from a point and continue through redirects/links, this wont be triggered.
+// It will here come once you come through the URL. when you are at any intermediate points and continue through redirects/links, this wont be triggered.(Router only will be triggered).
 
 if(cookie.load('cookie')){ // If cookie is there and reload happens, it comes here and we do manual dispatch. and store data in store.
     let c = cookie.load('cookie');
