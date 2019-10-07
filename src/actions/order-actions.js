@@ -10,7 +10,7 @@ const createOrderSuccess = () => {
     return {
         type : 'ORDER_CREATION_SUCCESS',
         payload : {
-            orderPlacingStatus : 'true'
+            orderPlacingStatus : true
         },
     }
 };
@@ -19,7 +19,7 @@ const createOrderFailure = () => {
     return {
         type : 'ORDER_CREATION_FAILURE',
         payload : {
-            orderPlacingStatus : 'false'
+            orderPlacingStatus : false
         },
     }
 };

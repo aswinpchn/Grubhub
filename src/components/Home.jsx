@@ -35,7 +35,7 @@ class Home extends React.Component {
     renderItems(restaurantId) {
         if(this.props.selectedRestaurant && restaurantId === this.props.selectedRestaurant.restaurantId)
         return (
-            <Items items={this.props.selectedRestaurant.items} />
+            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user.id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
         )
     }
 
@@ -43,15 +43,16 @@ class Home extends React.Component {
 
         let restaurants = '';
         if(this.props.user && this.props.user.type && this.props.user.type === 'o') {
-            restaurants =
-                <><Card className="shadow bg-white rounded" key={this.props.restaurants.id} onClick={() => this.handleRestaurantSelect(this.props.restaurants.id)}>
-                    <Card.Body>
-                        <Card.Title>Restaurant name : {this.props.restaurants.name}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">Cusinine : {this.props.restaurants.cuisine}</Card.Subtitle>
-                    </Card.Body>
-                </Card>
-                {this.renderItems(this.props.restaurants.id)}
-                </>
+            // restaurants =
+            //     <><Card className="shadow bg-white rounded" key={this.props.restaurants.id} onClick={() => this.handleRestaurantSelect(this.props.restaurants.id)}>
+            //         <Card.Body>
+            //             <Card.Title>Restaurant name : {this.props.restaurants.name}</Card.Title>
+            //             <Card.Subtitle className="mb-2 text-muted">Cusinine : {this.props.restaurants.cuisine}</Card.Subtitle>
+            //         </Card.Body>
+            //     </Card>
+            //     {this.renderItems(this.props.restaurants.id)}
+            //     </>
+
         }
         else {
             restaurants = this.props.restaurants.map((restaurant) => {
@@ -88,8 +89,9 @@ class Home extends React.Component {
     render() {
         if(this.props.restaurants || this.props.error)
             return(
-                <div className="home">
+                <div className="home"> 
                     <Header userDetails={this.props.user} />
+                    { this.props.order && this.props.order.orderPlacingStatus === true ? "Order placing success -> Go to your orders page to check out your order status" : this.props.order.orderPlacingStatus ? "Order placing failure" : "" }
                     {this.props.user && this.props.user.type === 'c' ? (<Form.Control type="text" placeholder="Search" className="search-input" onChange={this.searchRestaurant.bind(this)} />) : ''}
                     {this.renderErrorMessage()}
                     <h2 className="heading">{this.props.user.type === 'o' ? 'Your restaurant' : (this.props.foundMatching ? 'Search Results' : 'Restaurants you may like') }</h2>
@@ -107,7 +109,8 @@ const mapStateToProps = (state) => {
         restaurants: state.restaurant.restaurants, // We are reading it here still we make a page for restaurant iteslf.
         error: state.restaurant.error,
         foundMatching: state.restaurant.foundMatching,
-        selectedRestaurant: state.restaurant.selectedRestaurant
+        selectedRestaurant: state.restaurant.selectedRestaurant,
+        order : state.order,
     };
 }
 

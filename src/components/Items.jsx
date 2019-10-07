@@ -8,12 +8,21 @@ class Items extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedItems: {}
+            selectedItems: {},
         }
 
         this.incrementItem = this.incrementItem.bind(this);
         this.decrementItem = this.decrementItem.bind(this);
         this.handleOrderClick = this.handleOrderClick.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.order.orderPlacingStatus !== prevProps.order.orderPlacingStatus) {
+            if(this.props.order.orderPlacingStatus === true)
+                this.setState({
+                    selectedItems: {},
+                });
+        }
     }
 
     renderGroup(items, category) {
@@ -60,6 +69,20 @@ class Items extends React.Component {
     }
 
     handleOrderClick() {
+        let orderObject = {};
+        orderObject.restaurantid = this.props.restaurantDetails;
+        orderObject.customerid = this.props.userDetails;
+        orderObject.cost = 10;
+        orderObject.status = "ordered";
+        orderObject.items = [];
+        for (var key in this.state.selectedItems) {
+            let element = {};
+            element.menuid = key;
+            element.quantity = this.state.selectedItems[key];
+            orderObject.items.push(element);
+        }
+        
+        this.props.createOrderTrigger(orderObject);
     }
 
     render() {
@@ -70,11 +93,17 @@ class Items extends React.Component {
                 <div className="item-list">
                     {map(groupedItems, this.renderGroup.bind(this))}
                 </div>
-                { this.state.selectedItems && Object.keys(this.state.selectedItems).length ?<Button onClick={this.handleOrderClick}>Order</Button> : "" }
+                {this.state.selectedItems && Object.keys(this.state.selectedItems).length !== 0 ? (this.props.order.orderPlacingStatus === true ? "" : <Button onClick={this.handleOrderClick}>Order</Button> ) : ""}
             </div>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        order : state.order
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -84,4 +113,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Items);
+export default connect(mapStateToProps, mapDispatchToProps)(Items);
