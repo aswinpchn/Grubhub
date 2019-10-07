@@ -123,7 +123,7 @@ class Profile extends React.Component {
 
     renderProfile() {
         return(
-        <div>
+        <div style={{marginLeft : '20%', marginRight: '30%'}}>
             {this.state.updateStatus}
             <Form className="user-details">
                 <Form.Group controlId="formName">
