@@ -40,7 +40,6 @@ router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
                     });
                     Promise.all(insertResponse).then((response) => {
                         let insertSuccess = response.every((element) => {
-                                                console.log(element);
                                                 if(!element.insertId || !(element.insertId != NaN)) {
                                                     return false;
                                                 }
