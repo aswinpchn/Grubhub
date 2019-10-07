@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, Alert, Form, Button } from 'react-bootstrap';
 import { cloneDeep, groupBy, map } from 'lodash';
+import { connect } from 'react-redux';
+import { createOrderTrigger } from '../actions/order-actions';
 
 class Items extends React.Component {
     constructor(props) {
@@ -11,6 +13,7 @@ class Items extends React.Component {
 
         this.incrementItem = this.incrementItem.bind(this);
         this.decrementItem = this.decrementItem.bind(this);
+        this.handleOrderClick = this.handleOrderClick.bind(this);
     }
 
     renderGroup(items, category) {
@@ -56,6 +59,9 @@ class Items extends React.Component {
         )
     }
 
+    handleOrderClick() {
+    }
+
     render() {
         const items = cloneDeep(this.props.items);
         const groupedItems = groupBy(items, 'category');
@@ -64,10 +70,18 @@ class Items extends React.Component {
                 <div className="item-list">
                     {map(groupedItems, this.renderGroup.bind(this))}
                 </div>
-                { this.state.selectedItems && Object.keys(this.state.selectedItems).length ?<Button>Order</Button> : "" }
+                { this.state.selectedItems && Object.keys(this.state.selectedItems).length ?<Button onClick={this.handleOrderClick}>Order</Button> : "" }
             </div>
         );
     }
 }
 
-export default Items;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createOrderTrigger: (request) => {
+            dispatch(createOrderTrigger(request));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Items);
