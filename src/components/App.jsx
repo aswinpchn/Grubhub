@@ -4,6 +4,7 @@ import Home from './Home';
 import Login from './Login';
 import SignUp from './SignUp';
 import Profile from './Profile';
+import CustomerOrder from './CustomerOrder';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { store } from '../store';
 
@@ -24,6 +25,14 @@ function App() {
             <Route path='/profile' render={() => { 
               var props =store.getState();
               return (props.user && props.user.username !== "") ? <Profile /> :(<Redirect to="/login" />)
+            }} />
+            <Route path='/customerOrders' render={() => { 
+              var props =store.getState();
+              return (props.user && props.user.username !== "" && props.user.type === 'c') ? <CustomerOrder /> :(<Redirect to="/login" />)
+            }} />
+            <Route path='/ownerOrders' render={() => { 
+              var props =store.getState();
+              return (props.user && props.user.username !== "" && props.user.type === 'o') ? <CustomerOrder /> :(<Redirect to="/login" />)
             }} />
           </Switch>
     </Router>
