@@ -77,7 +77,7 @@ class Items extends React.Component {
         let orderObject = {};
         orderObject.restaurantid = this.props.restaurantDetails;
         orderObject.customerid = this.props.userDetails;
-        orderObject.cost = 10;
+        orderObject.cost = this.state.basePrice*0.0925 + this.state.basePrice;
         orderObject.status = "ordered";
         orderObject.items = [];
         for (var key in this.state.selectedItems) {
