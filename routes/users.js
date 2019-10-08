@@ -17,8 +17,8 @@ router.get('/:id', (req, res) => { // get user by id
         if(response.length !== 1) {
           throw "no user";
         }
-  
-        res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
+        // //res.type('json')  // This also will work similar to setting content type application/json
+        res.writeHead(200, { 
           'Content-type' : 'application/json'
         });
         res.end(JSON.stringify(response[0]));    // We can't send JSON directly we have to change it to string using stringify
