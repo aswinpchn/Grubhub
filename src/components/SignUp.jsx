@@ -93,7 +93,7 @@ class SignUp extends React.Component {
                 });
             }).catch((error) => { // error.response.data has duplicate user or db error
                 this.setState({
-                    error : error.response.data + ", so try login",
+                    error : error + ", so try login",
                     success : "",
                 });
             });
@@ -115,7 +115,7 @@ class SignUp extends React.Component {
                 });
             }).catch((error) => { // error.response.data has duplicate user or db error
                 this.setState({
-                    error : error.response.data + ", so try login",
+                    error : error + ", so try login",
                     success : "",
                 });
             });
