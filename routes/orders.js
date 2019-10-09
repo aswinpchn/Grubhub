@@ -11,6 +11,26 @@ const itemsValidity = (req) => {
         });
 }
 
+router.post('/:orderid', (req, res) => {
+    console.log(req.body);
+    if(!req.body.status) {
+        res.writeHead(400);
+        res.end("wrong parameters");
+    } else {
+        let responsePromise = dbCall(`update grubhub.order set status='${req.body.status}' where id=${req.params.orderid}`);
+        responsePromise.then(response => {
+            if(response.affectedRows > 0) {
+                res.writeHead(200);
+                res.end('success');
+            }
+        }).catch(error => {
+            console.log(error)
+            res.writeHead(500);
+            res.end("db error");
+        });
+    }
+});
+
 router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
     if(!req.body.restaurantid || !req.body.cost || !req.body.status || !req.body.customerid ) {
         res.writeHead(400);

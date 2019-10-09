@@ -132,6 +132,7 @@ router.get('/:restaurantid/orders', (req, res) => {
           result.orders[i].cost = element.cost;
           result.orders[i].status = element.status;
           result.orders[i].ordertime = element.ordertime;
+          result.orders[i].id = element.id;
           customerFetchPromise[i] = dbCall(`select * from user where id=${element.customerid_order}`);
           i++; 
         });
