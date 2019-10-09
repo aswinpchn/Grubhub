@@ -117,6 +117,7 @@ class Home extends React.Component {
                             <button onClick={() => this.handleStatusUpdate(order.id, 'Cooking')}>Cooking</button>
                             <button onClick={() => this.handleStatusUpdate(order.id, 'On the way')}>On the way</button>
                             <button onClick={() => this.handleStatusUpdate(order.id, 'Delivered')}>Delivered</button>
+                            <button onClick={() => this.handleStatusUpdate(order.id, 'Cancelled')}>Cancel</button>
                         </span>
                     </Card.Subtitle>
                 </Card.Body>

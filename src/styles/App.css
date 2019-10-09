@@ -10,6 +10,13 @@ html, body, #root {
   height: 100%;
 }
 
+.login {
+    background-image: url('../images/food-app.png');
+    background-position: 49% 30%;
+    background-size: 25%;
+    background-repeat: no-repeat;
+}
+
 #app,
 .appBody {
   display: flex;
