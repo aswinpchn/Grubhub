@@ -18,6 +18,26 @@ const orderReuducer = (state = {}, action) => {
                 customerOrder : '',
                 orderGetStatus : false
             });
+        case 'ORDERS_FETCH_SUCCESS': {
+            return Object.assign({}, state, {
+                orders: action.payload.orders
+            });
+        }
+        case 'ORDERS_FETCH_FAILURE': {
+            return Object.assign({}, state, {
+                error: action.payload.error
+            });
+        }
+        case 'ORDER_UPDATE_SUCCESS': {
+            return Object.assign({}, state, {
+                orders: action.payload.orders
+            });
+        }
+        case 'ORDER_UPDATE_FAILURE': {
+            return Object.assign({}, state, {
+                error: action.payload.error
+            });
+        }
         default : 
             return state;
     }

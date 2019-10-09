@@ -188,3 +188,11 @@ div.mb-2.text-muted.item-details.card-subtitle.h6 {
   vertical-align: text-bottom;
   color: #007bff;
 }
+
+.order-contents {
+  padding-right: 2rem;
+}
+
+.order-contents > button {
+  margin-right: 1rem;
+}

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { URL } from '../constants';
+import { fetchRestaurantOrdersTrigger } from './restaurant-action';
 
 const tryCreatingOrder = (request) => {
     axios.defaults.withCredentials = true;
@@ -9,6 +10,29 @@ const tryCreatingOrder = (request) => {
 const tryGettingCustomerOrder = (userid) => {
     return axios.get(`${URL}/user/${userid}/orders`);
 }
+
+const tryUpdatingOrderStatus = (orderId, request) => {
+    console.log(request);
+    return axios.post(`${URL}/order/${orderId}`, request);
+}
+
+const updateOrderStatusSuccess = (response) => {
+    return {
+        type : 'ORDER_UPDATE_SUCCESS',
+        payload : {
+            orders : response
+        },
+    }
+}
+
+const updateOrderStatusFailure = () => {
+    return {
+        type : 'ORDER_UPDATE_FAILURE',
+        payload : {
+            error: 'Something Went wrong!'
+        },
+    }
+};
 
 const createOrderSuccess = () => {
     return {
@@ -57,7 +81,6 @@ export const createOrderTrigger = (request) => {
 };
 
 export const getCustomerOrderTrigger = (userid) => {
-    console.log(userid);
     return dispatch => {
         return tryGettingCustomerOrder(userid).then((response) => {
             dispatch(getCustomerOrderSuccess(response.data));
@@ -66,3 +89,13 @@ export const getCustomerOrderTrigger = (userid) => {
         });
     };
 };
+
+export const updateOrderStatusTrigger = (orderId, restaurantId, status) => {
+    return dispatch => {
+        return tryUpdatingOrderStatus(orderId, { 'status': status }).then((response) => {
+            dispatch(fetchRestaurantOrdersTrigger(restaurantId));
+        }).catch((error) => {
+            dispatch(updateOrderStatusFailure());
+        });
+    };
+}

@@ -10,6 +10,7 @@ class CustomerOrder extends React.Component {
         this.renderCustomerOrders = this.renderCustomerOrders.bind(this);
         this.renderItems = this.renderItems.bind(this);
         this.renderOrderList = this.renderOrderList.bind(this);
+        this.handleOrderSelect = this.handleOrderSelect.bind(this);
         this.state = {
             selectedOrderId: ''
         };
@@ -21,9 +22,9 @@ class CustomerOrder extends React.Component {
         }
     }
 
-    handleOrderSelect(event) {
+    handleOrderSelect(id) {
         this.setState({
-            selectedOrderId: event.target.id
+            selectedOrderId: id
         });
     }
 
@@ -32,10 +33,9 @@ class CustomerOrder extends React.Component {
             return(
                menu.map((item) => 
                     <Card className="shadow bg-white rounded" key={item.id}>
-                        <Card.Body>
-                            <Card.Title>Item name : {menu.name}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">Price : {item.price}</Card.Subtitle>
-                            <Card.Subtitle className="mb-2 text-muted">Quantity : {item.quantity}</Card.Subtitle>
+                        <Card.Body className="item-card">
+                            <Card.Title className="item-name">Item name : {item.name}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted"><span className="order-contents">Price : {item.price} </span><span className="order-contents"> Quantity : {item.quantity}</span></Card.Subtitle>
                         </Card.Body>
                     </Card>
                )
@@ -46,14 +46,15 @@ class CustomerOrder extends React.Component {
     renderOrderList(customerOrders) {
         return customerOrders.orders.map((order) => 
         <>
-            <Card className="shadow bg-white rounded" key={order.id} onClick={() => this.handleOrderSelect(order.id)}>
+            <Card className="shadow bg-white rounded" style={{height: "5rem"}} key={order.id} onClick={() => this.handleOrderSelect(order.id)}>
                 <Card.Body>
                     <Card.Title>Restaurant name : {order.restaurantname}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">Time : {Date.parse(order.ordertime).toDateString()}</Card.Subtitle>
-                    <Card.Subtitle className="mb-2 text-muted">Status : {order.status}</Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted"><span className="order-contents">Time : {new Date(Date.parse(order.ordertime)).toDateString()}</span><span className="order-contents">Status : {order.status}</span></Card.Subtitle>
                 </Card.Body>
             </Card>
-            {this.renderItems(order.id, order.menu)}
+            <div className="item-list">
+                {this.renderItems(order.id, order.menu)}
+            </div>
         </>
     );
     }
@@ -77,7 +78,7 @@ class CustomerOrder extends React.Component {
         if(this.props.user && this.props.user.name !== '' && (this.props.order.ordergetStatus === false || this.props.order.customerOrder)) {
             return(
                 <div>
-                    <Header userDetails={this.props.user} className="CustomerOrders" />
+                    <Header userDetails={this.props.user} className="customer-orders" />
                     {this.props.order.ordergetStatus === false ? <div>Order fetching failed</div> : this.renderCustomerOrders()}
                 </div>
             );

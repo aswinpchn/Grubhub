@@ -9,16 +9,34 @@ const tryFetchingMatchingRestaurants = (keyword) => {
     return axios.get(`${URL}/restaurant/search/${keyword}`);
 }
 
-const tryFetchTopRestaurants = (keyword) => {
+const tryFetchTopRestaurants = () => {
     return axios.get(`${URL}/restaurant`);
 }
 
 const tryFetchingOrdersForRestaurant = (restaurantId) => {
-    return axios.get(`${URL}/restaurant`);
+    return axios.get(`${URL}/restaurant/${restaurantId}/orders`);
 }
 
 const tryFetchingItems = (restaurantId) => {
     return axios.get(`${URL}/restaurant/${restaurantId}/menu`);
+}
+
+const fetchOrdersForRestaurantSuccess = (orders) => {
+    return {
+        type: 'ORDERS_FETCH_SUCCESS',
+        payload: {
+            orders: orders
+        }
+    }
+}
+
+const fetchOrdersForRestaurantFailure = () => {
+    return {
+        type: 'ORDERS_FETCH_FAILURE',
+        payload: {
+            error: 'No orders to display'
+        }
+    }
 }
 
 const fetchingOwnedRestaurantSuccess = (restaurants) => {
@@ -111,8 +129,9 @@ export const fetchOwnedRestaurantTrigger = (ownerid) => {
     return dispatch => {
       return tryFetchingOwnedRestaurant(ownerid).then(response => {
           dispatch(fetchingOwnedRestaurantSuccess(response.data));
+          dispatch(fetchRestaurantOrdersTrigger(response.data.id));
       }).catch(error => {
-          dispatch(fetchingOwnedRestaurantFailure(error.response.statusText));
+          dispatch(fetchingOwnedRestaurantFailure(error));
       });
     };
   }
@@ -164,5 +183,17 @@ export const triggerCloseItems = () => {
 export const logOut = () => {
     return dispatch => {
         dispatch(logOutTrigger())
+    }
+}
+
+export const fetchRestaurantOrdersTrigger = (restaurantId) => {
+    console.log(restaurantId);
+    return dispatch => {
+        return tryFetchingOrdersForRestaurant(restaurantId).then(response => {
+            dispatch(fetchOrdersForRestaurantSuccess(response.data))
+        }).catch((error) => {
+            console.log(error);
+            dispatch(fetchOrdersForRestaurantFailure())
+        })
     }
 }
