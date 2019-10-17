@@ -22,6 +22,50 @@ const updateUser = (user) => {
     });
 }
 
+const doSignUp = (user) => {
+	axios.defaults.withCredentials = true;
+	if(user.accountType === 'buyer') {
+		return axios.put(`${URL}/user/customerSignUp`, {
+			name : user.name,
+			email : user.email,
+			password : user.password,
+			phone : user.phone,
+			type : 'c',
+			image : 'http://google.com'
+		});
+	} else {
+		return axios.put(`${URL}/user/ownerSignUp`, {
+			name : user.name,
+			email : user.email,
+			password : user.password,
+			phone : user.phone,
+			type : 'o',
+			image : 'http://google.com',
+			zip : user.zip,
+			restaurantname : user.restaurantname,
+			cuisine : user.cuisine,
+		});
+	}
+}
+
+const signUpSuccess = (status) => {
+	return {
+		type : 'SIGNUP_SUCCESS',
+		payload : {
+			status : status,
+		}
+	}
+}
+
+const signUpFailure = (status) => {
+	return {
+		type : 'SIGNUP_FAILURE',
+		payload : {
+			status : status,
+		}
+	}
+}
+
 const loginSuccess = (username, password, name, phone, type, image, id) => {
     return {
         type : 'LOGIN_SUCCESS',
@@ -105,3 +149,17 @@ export const logOut = () => {
         dispatch(logOutTrigger())
     }
 }
+
+export const signUp = (user) => {
+	return dispatch => {
+		return doSignUp(user).then(response => {
+			dispatch(signUpSuccess(response.data + 'Go to login page'));
+		}).catch(error => {
+			console.log(error.response);
+			dispatch(signUpFailure(error.response.data + 'Try again'));
+		});
+	};
+}
+
+// https://github.com/reduxjs/redux-thunk
+// Redux Thunk middleware allows you to write action creators that return a function instead of an action. The thunk can be used to delay the dispatch of an action, or to dispatch only if a certain condition is met. The inner function receives the store methods dispatch and getState as parameters.

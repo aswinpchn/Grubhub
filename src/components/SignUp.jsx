@@ -5,6 +5,8 @@ import { Button, Form, InputGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { getField } from '../utils';
 import Axios from 'axios';
+import { signUp } from '../actions/user-action';
+import { connect } from 'react-redux';
 
 class SignUp extends React.Component {
     constructor(props) {
@@ -78,55 +80,14 @@ class SignUp extends React.Component {
         e.preventDefault();
 
         const accountType = getField(['match', 'params', 'type'], this.props);
-        if(accountType === "buyer") {
-            Axios.put('http://localhost:3001/user/customerSignUp', {  // http:// has to be there. otherwise cors will come/
-                name : this.state.name,
-                email : this.state.email,
-                password : this.state.password,
-                phone : this.state.phone,
-                type : 'c',
-                image : 'http://google.com'
-            }).then((response) => { // response.data has success
-                this.setState({
-                    success : response.data + ", you can now go to login page.",
-                    error : "",
-                });
-            }).catch((error) => { // error.response.data has duplicate user or db error
-                this.setState({
-                    error : error + ", so try login",
-                    success : "",
-                });
-            });
-        } else {
-            Axios.put('http://localhost:3001/user/ownerSignUp', {  // http:// has to be there. otherwise cors will come/
-                name : this.state.name,
-                email : this.state.email,
-                password : this.state.password,
-                phone : this.state.phone,
-                type : 'o',
-                image : 'http://google.com',
-                zip : this.state.zip,
-                restaurantname : this.state.restaurantname,
-                cuisine : this.state.cuisine,
-            }).then((response) => { // response.data has success
-                this.setState({
-                    success : response.data + ", you can now go to login page.",
-                    error : "",
-                });
-            }).catch((error) => { // error.response.data has duplicate user or db error
-                this.setState({
-                    error : error + ", so try login",
-                    success : "",
-                });
-            });
-        }
+        const p = Object.assign({}, this.state, {accountType});
+        this.props.signUp(p);
     }
 
     renderSignUpForm(accountType) {
         return (
             <>
-                {this.state.error ? <div>{this.state.error}</div> : null}
-                {this.state.success ?  <div>{this.state.success}</div> : null}
+                {this.props.user.status ? <div>{this.props.user.status}</div> : null}
                 <Form className="signup-form" onSubmit = {this.signUp} >
                     <h2 className="form-heading">Sign Up as <span className="user-type">{accountType}</span></h2>
                     <Form.Group controlId="formBasicName">
@@ -210,4 +171,14 @@ class SignUp extends React.Component {
     }
 }
 
-export default SignUp;
+const mapStateToProps = (state) => {
+    return {
+        user : state.user
+    };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+    signUp: (user) => dispatch(signUp(user))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
