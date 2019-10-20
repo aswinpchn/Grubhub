@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const dbCall = require('../helper'); 
+const dbCall = require('../helper');
+const Restaurant = require('../model/restaurant'); 
 
 router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
     if(!req.params.id)
@@ -94,7 +95,7 @@ router.get('/search/:keyword', (req, res) => { // Search restaurant by item name
 });
 
 router.get('/', (req, res) => { // Get all restaurants.
-  const responsePromise = dbCall(`SELECT * FROM grubhub.restaurant LIMIT 100`);
+  const responsePromise = Restaurant.find();
   responsePromise.then((response) => {
     res.writeHead(200, {
       'Content-type' : 'application/json'
