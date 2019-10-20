@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper');
 const Restaurant = require('../model/restaurant'); 
+const mongoose = require('mongoose');
+const Menu = require('../model/menu');
 
 router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
     if(!req.params.id)
@@ -36,23 +38,34 @@ router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
 });
 
 router.put('/:restaurantid/menu', (req, res) => { // Add item to menu.
-    if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.params.restaurantid) {
-      res.writeHead(400);
-      res.end("wrong parameters");
+  if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.params.restaurantid) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+
+  const menu = new Menu({
+    _id : new mongoose.Types.ObjectId(),
+    active : 1,
+    category : req.body.category,
+    name : req.body.name,
+    description : req.body.description,
+    image : "http://google.com",
+    price : req.body.price,
+  });
+
+  let insertUserResponse  = Restaurant.updateOne({ _id :  req.params.restaurantid }, { $push : { menu : menu } });
+  insertUserResponse.then((response) => {
+    if(response.nmodified == 1) {
+      res.writeHead(200);
+      res.end("success");
     } else {
-      let insertUserResponse = dbCall(`insert into menu values (NULL, 1,  '${req.body.category}', '${req.body.name}', '${req.body.description}', 'http://google.com', '${req.body.price}', ${req.params.restaurantid})`);
-      insertUserResponse.then((response) => {
-        if(response.affectedRows == 1) {
-          res.writeHead(200);
-          res.end("success");
-        } else {
-          throw "db error";
-        }
-      }).catch((error) => {
-        res.writeHead(500);
-        res.end("db error");
-      });
+      throw "db error";
     }
+  }).catch((error) => {
+    res.writeHead(500);
+    res.end("db error");
+  });
+  }
 });
 
 router.post('/:restaurantid/menu', (req, res) => { // Update a menu item.
