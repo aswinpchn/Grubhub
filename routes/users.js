@@ -3,6 +3,7 @@ const router = express.Router();
 const dbCall = require('../helper'); 
 const User = require('../model/user');
 const mongoose = require('mongoose');
+const Restaurant = require('../model/restaurant');
 
 
 router.get('/:id', (req, res) => { // get user by id
@@ -125,38 +126,60 @@ if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone ||
 }
 });
   
-  router.put('/ownerSignUp', (req, res) => { // Owner SignUp
-    if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
-      res.writeHead(400);
-      res.end("wrong parameters");
-    } else {
-      let duplicateEmail = false;
-      let promiseResponse = dbCall(`select * from user where email LIKE '${req.body.email}'`);
-      promiseResponse.then((response) => {
-        if(response.length >= 1) {
-          throw "duplicate user";
-        } else {
-          let insertUserResponse = dbCall(`insert into user values (NULL, '${req.body.name}', '${req.body.email}', '${req.body.password}', '${req.body.phone}', '${req.body.type}', 'http://google.com')`);
-          insertUserResponse.then((response) => {
-            let owneridResponse = dbCall(`select id from user where email LIKE '${req.body.email}'`);
-            owneridResponse.then((response) => {
-              dbCall(`insert into restaurant values (NULL, '${req.body.restaurantname}', '${req.body.zip}', '${req.body.cuisine}', '${req.body.image}', ${response[0].id})`);
+router.put('/ownerSignUp', (req, res) => { // Owner SignUp
+  if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    let duplicateEmail = false;
+    let promiseResponse = User.find({email : req.body.email });
+    promiseResponse.then((response) => {
+      if(response.length >= 1) {
+        throw "duplicate user";
+      } else {
+          const user = new User({
+            _id: new mongoose.Types.ObjectId(),
+            name : req.body.name,
+            email : req.body.email,
+            password : req.body.password,
+            phone : req.body.phone,
+            type : req.body.type,
+            image : "http://google.com",
+          });
+        
+          let insertResponse = user.save();
+          insertResponse.then((response) => {
+            const restaurant = new Restaurant({
+              _id : new mongoose.Types.ObjectId(),
+              name : req.body.restaurantname,
+              zip : req.body.zip,
+              cuisine : req.body.cuisine,
+              image : req.body.image,
+              ownerid : user._id, //response.toObject()['_id'], // Both can be used.
+            });
+
+            const insertRestaurantResponse = restaurant.save();
+
+            insertRestaurantResponse.then(response => {
               res.writeHead(200);
               res.end("success");
+            }).catch(error => {
+              throw "db error";
             });
-          });
-        }
-      }).catch((error) => {
-        if(error == "duplicate user") {
-          res.writeHead(401);
-          res.end("duplicate user");
-        } else {
-          res.writeHead(500);
-          res.end("db error");
-        }
-      });
-    }
-  });
+
+        });
+      }
+    }).catch((error) => {
+      if(error == "duplicate user") {
+        res.writeHead(401);
+        res.end("duplicate user");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
+      }
+    });
+  }
+});
   
   router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
     if(!req.body.name && !req.body.email) {
