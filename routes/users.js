@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper'); 
+const User = require('../model/user');
+const mongoose = require('mongoose');
+
 
 router.get('/:id', (req, res) => { // get user by id
   
@@ -78,38 +81,49 @@ router.get('/:id', (req, res) => { // get user by id
     }
   });
   
-  router.put('/customerSignUp', (req, res) => { // Customer SignUp
-    if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
-      res.writeHead(400);
-      res.end("wrong parameters");
+router.put('/customerSignUp', (req, res) => {
+if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
+  res.writeHead(400);
+  res.end("wrong parameters");
+} else {
+  let duplicateEmail = false;
+  let promiseResponse = User.find({email : req.body.email });
+  promiseResponse.then(response=>{
+    if(response.length >= 1) {
+      throw "duplicate user";
     } else {
-      let duplicateEmail = false;
-      let promiseResponse = dbCall(`select * from user where email LIKE '${req.body.email}'`);
-      promiseResponse.then(response=>{
-        if(response.length >= 1) {
-          throw "duplicate user";
+
+      const user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        name : req.body.name,
+        email : req.body.email,
+        password : req.body.password,
+        phone : req.body.phone,
+        type : req.body.type,
+        image : "http://google.com",
+      });
+      
+      let insertResponse = user.save();
+      insertResponse.then(response=>{
+        if(response.name === req.body.name) {
+          res.writeHead(200);
+          res.end('success');
         } else {
-          let insertResponse = dbCall(`insert into user values (NULL, '${req.body.name}', '${req.body.email}', '${req.body.password}', '${req.body.phone}', '${req.body.type}', 'http://google.com')`);
-          insertResponse.then(response=>{
-            if(response.affectedRows == 1) {
-              res.writeHead(200);
-              res.end('success');
-            } else {
-              throw "db error";
-            } 
-          });
-        }
-      }).catch(error=>{
-        if(error == "duplicate user") {
-          res.writeHead(401);
-          res.end("duplicate user");
-        } else {
-          res.writeHead(500);
-          res.end("db error");
-        }
+          throw "db error";
+        } 
       });
     }
+  }).catch(error=>{
+    if(error == "duplicate user") {
+      res.writeHead(401);
+      res.end("duplicate user");
+    } else {
+      res.writeHead(500);
+      res.end("db error");
+    }
   });
+}
+});
   
   router.put('/ownerSignUp', (req, res) => { // Owner SignUp
     if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
