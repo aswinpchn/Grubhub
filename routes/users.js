@@ -39,48 +39,48 @@ router.get('/:id', (req, res) => { // get user by id
     }
   });
   
-  router.post('/login', (req, res) => { // Login
-    if(!req.body.email || !req.body.password || !req.body.type) {
-      res.writeHead(400);
-      res.end("wrong parameters");
-    } else {
-      let responsePromise = dbCall(`select * from user where email LIKE '${req.body.email}'`);
-      responsePromise.then((response) => {
-        
-        if(response.length !== 1) { // but yeah, wont or should go more than one as signup email restriction is there.
-          throw "no user";
-        }
-  
-        if(response[0].type !== req.body.type) {
-          throw "wrong user type";
-        }
-  
-        if(response[0].password !== req.body.password) {
-          throw "invalid password";
-        }
-        let c = {username : req.body.email, password : req.body.password, type : req.body.type};
-        res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
-        res.writeHead(200, { 
-          'Content-type' : 'application/json'
-        });
-        res.end(JSON.stringify(response[0]));
-      }).catch((error)=>{
-        if(error == "no user") {
-          res.writeHead(404);
-          res.end("user not found");
-        } else if(error == "invalid password") {
-          res.writeHead(401);
-          res.end("invalid password");
-        } else if(error == "wrong user type") {
-          res.writeHead(401);
-          res.end("wrong user type");
-        } else {
-          res.writeHead(500);
-          res.end("db error");
-        }
+router.post('/login', (req, res) => { // Login
+  if(!req.body.email || !req.body.password || !req.body.type) {
+    res.writeHead(400);
+    res.end("wrong parameters");
+  } else {
+    
+    let responsePromise = User.find({email : req.body.email });
+    responsePromise.then((response) => {
+      if(response.length !== 1) { // but yeah, wont or should go more than one as signup email restriction is there.
+        throw "no user";
+      }
+
+      if(response[0].type !== req.body.type) {
+        throw "wrong user type";
+      }
+
+      if(response[0].password !== req.body.password) {
+        throw "invalid password";
+      }
+      let c = {username : req.body.email, password : req.body.password, type : req.body.type};
+      res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
+      res.writeHead(200, { 
+        'Content-type' : 'application/json'
       });
-    }
-  });
+      res.end(JSON.stringify(response[0]));
+    }).catch((error)=>{
+      if(error == "no user") {
+        res.writeHead(404);
+        res.end("user not found");
+      } else if(error == "invalid password") {
+        res.writeHead(401);
+        res.end("invalid password");
+      } else if(error == "wrong user type") {
+        res.writeHead(401);
+        res.end("wrong user type");
+      } else {
+        res.writeHead(500);
+        res.end("db error");
+      }
+    });
+  }
+});
   
 router.put('/customerSignUp', (req, res) => {
 if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
