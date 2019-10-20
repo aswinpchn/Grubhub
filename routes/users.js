@@ -82,7 +82,7 @@ router.post('/login', (req, res) => { // Login
   }
 });
   
-router.put('/customerSignUp', (req, res) => {
+router.put('/customerSignUp', (req, res) => { // Customer SignUp
 if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image) {
   res.writeHead(400);
   res.end("wrong parameters");
@@ -181,22 +181,28 @@ router.put('/ownerSignUp', (req, res) => { // Owner SignUp
   }
 });
   
-  router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
-    if(!req.body.name && !req.body.email) {
-      res.writeHead(500);
-      res.end("db error");
+router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
+  if(!req.body.name && !req.body.email) {
+    res.writeHead(500);
+    res.end("db error");
+  }
+
+  let responsePromise = User.updateOne({ email : req.body.email },{ name : req.body.name, password : req.body.password, phone : req.body.phone });
+  responsePromise.then((response) => {
+    
+    if(response.nModified != 1) {
+      throw "db error";
     }
-    let responsePromise = dbCall(`update user set name='${req.body.name}', password='${req.body.password}', phone='${req.body.phone}' where email='${req.body.email}'`);
-    responsePromise.then((response) => {
-      let c = {username : req.body.email, password : req.body.password, type : req.body.type};
-      res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
-      res.writeHead(200);
-      res.end("success");
-    }).catch((error) => { // Failur only if DB is down, all validations are done front end.
-      res.writeHead(500);
-      res.end("db error");
-    });
+
+    let c = {username : req.body.email, password : req.body.password, type : req.body.type};
+    res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
+    res.writeHead(200);
+    res.end("success");
+  }).catch((error) => { // Failure only if DB is down, all validations are done front end.
+    res.writeHead(500);
+    res.end("db error");
   });
+});
 
   router.get('/:customerid/orders', (req, res) => {
     if(!req.params.customerid) {
