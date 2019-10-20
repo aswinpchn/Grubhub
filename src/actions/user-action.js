@@ -123,13 +123,13 @@ const logOutTrigger = () => {
 export const loginTrigger = (username, password, type) => {
     return dispatch => {
       return getLogin(username, password, type).then(response => {
-          dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data.id));
+          dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data._id));
       }).catch(error => {
           console.log(error);
           dispatch(loginFailure('Something went wrong! Please try again later'));
       });
     };
-  }
+}
 
 export const updateTrigger = (user) => {
     console.log(user);
