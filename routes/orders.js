@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper'); 
+const mongoose = require('mongoose');
+const Order = require('../model/order');
+const OrderDetails = require('../model/orderDetails');
+const Restaurant = require('../model/restaurant');
 
 const itemsValidity = (req) => {
     return req.body.items.every((element) => {
@@ -39,64 +43,52 @@ router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
         res.writeHead(400);
         res.end("items not valid");
     } else {
-        let responsePromise = dbCall(`insert into grubhub.order values  (NULL, ${req.body.restaurantid}, ${req.body.cost}, 'ordered', ${req.body.customerid}, NOW())`);
-        responsePromise.then(response => {
-            if(response.insertId && response.insertId != NaN) {
-                let orderid = response.insertId;
-                let fullMenuDetails = [];
-                let selectResponse = [];
-                let i = 0;
-                req.body.items.forEach(element => {
-                    selectResponse[i] = dbCall(`select * from menu where id=${element.menuid}`);
-                    i++;
+
+        let restaurantItemsPromise = Restaurant.findOne({ _id : req.body.restaurantid});
+
+        restaurantItemsPromise.then(response => {
+            let orderDetails = [];
+            req.body.items.every((element) => {
+                let item;
+                for(let i = 0; i < response.menu.length; i++) {
+                    if(element.menuid == response.menu[i]._id) {
+                        item = response.menu[i];
+                    }
+                }
+                const o = new OrderDetails({
+                    _id: new mongoose.Types.ObjectId(),
+                    category : item.category,
+                    name : item.name,
+                    description : item.description,
+                    image : item.image,
+                    price : item.price,
+                    quantity : element.quantity,
                 });
-                Promise.all(selectResponse).then((response) => { //Promise.all is mysterious, look into it.
-                    fullMenuDetails = response
-                    let insertResponse = [];
-                    let i = 0;
-                    fullMenuDetails.forEach(element => {
-                        insertResponse[i] = dbCall(`insert into orderdetails values(NULL, ${orderid}, '${element[0].category}', '${element[0].name}', '${element[0].description}', 'http://google.com', ${element[0].price}, ${req.body.items[i].quantity})`);
-                        i++;
-                    });
-                    Promise.all(insertResponse).then((response) => {
-                        let insertSuccess = response.every((element) => {
-                                                if(!element.insertId || !(element.insertId != NaN)) {
-                                                    return false;
-                                                }
-                                                return true;
-                                            });
-                        if(!insertSuccess) {
-                            throw "db error";
-                        } else {
-                            res.writeHead(200);
-                            res.end('success');
-                        }
-                    }).catch(error => {
-                        //console.log(error);
-                        res.writeHead(500);
-                        res.end("db error");
-                    });
-                }).catch(error => {
-                    //console.log(error);
-                    res.writeHead(500);
-                    res.end("db error");
-                }); 
-            } else {
-                throw "order creation error";
-            }
+
+                orderDetails.push(o);
+            });
+
+            const order = new Order({
+                _id : new mongoose.Types.ObjectId(),
+                customerid : req.body.customerid,
+                restaurantid : req.body.restaurantid,
+                cost : req.body.cost,
+                status : req.body.status,
+                Time : new Date(),
+                orderDetails : orderDetails,
+            });
+
+            order.save();
+
+            res.writeHead(200);
+            res.end('success');
         }).catch(error => {
-            if(error === "items not valid") {
-                res.writeHead(400);
-                res.end("items not valid");
-            }
-            else if(error === "order creation error") {
-                res.writeHead(500);
-                res.end("order creation error");
-            } else {
-                res.writeHead(500);
-                res.end("db error");
-            }
+            console.log(error);
+            res.writeHead(500);
+            res.end('db error');
         });
+
+
     }
 });
 

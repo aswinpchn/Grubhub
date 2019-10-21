@@ -125,7 +125,7 @@ if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone ||
   });
 }
 });
-  
+ 
 router.put('/ownerSignUp', (req, res) => { // Owner SignUp
   if(!req.body.name || !req.body.email || !req.body.password || !req.body.phone || !req.body.type || !req.body.image || !req.body.zip || !req.body.restaurantname || !req.body.cuisine) {
     res.writeHead(400);
