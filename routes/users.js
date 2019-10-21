@@ -223,21 +223,12 @@ router.get('/:customerid/orders', (req, res) => { // Get orders for a user
       } else {
         let i = 0;
         result.numberoforders = orderResponse.length;
+        result.orders = orderResponse;
 
-        let restaurantPromise = Restaurant.findOne( { _id : orderResponse[0].restaurantid } );
-
-        restaurantPromise.then(resp => {
-          orderResponse.restaurantname = resp.name;
-          result.orders = orderResponse;
-          res.writeHead(200, {
-            'Content-type' : 'application/json'
-          });
-          res.end(JSON.stringify(result));
-        }).catch(err => {
-          console.log(err);
-          res.writeHead(500);
-          res.send('db error');
+        res.writeHead(200, {
+          'Content-type' : 'application/json'
         });
+        res.end(JSON.stringify(result));
       }
     }).catch(error=> {
       res.writeHead(500);
