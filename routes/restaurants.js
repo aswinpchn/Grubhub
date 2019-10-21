@@ -89,12 +89,12 @@ router.post('/:restaurantid/menu', (req, res) => { // Update a menu item.
     }
 });
 
-router.get('/search/:keyword', (req, res) => { // Search restaurant by item name
+router.get('/search/:keyword', (req, res) => { // Search all restaurants by item name
     if(!req.params.keyword) {
       res.writeHead(400);
       res.end("wrong parameters");
     } else {
-      const responsePromise = dbCall(`SELECT * FROM grubhub.restaurant INNER JOIN (select restaurantid from grubhub.menu where name like '%${req.params.keyword}%' group by restaurantid) as menu ON grubhub.restaurant.id = menu.restaurantid`);
+      const responsePromise = Restaurant.find({ menu : { $elemMatch : { name : { $regex: '.*' + req.params.keyword + '.*' } } } });
       responsePromise.then((response) => {
         res.writeHead(200, {
           'Content-type' : 'application/json'
