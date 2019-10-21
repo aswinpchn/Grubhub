@@ -67,7 +67,7 @@ class Home extends React.Component {
             const restaurants = this.props.restaurants.map((restaurant) => {
                     return (
                         <>
-                            <Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant.id)}>
+                            <Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant._id)}>
                                 <Card.Body>
                                     <Card.Title>Restaurant name : {restaurant.name}</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">Cuisine : {restaurant.cuisine}</Card.Subtitle>
