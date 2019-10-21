@@ -37,23 +37,23 @@ class Items extends React.Component {
         )
     }
 
-    incrementItem(id, price) {
+    incrementItem(_id, price) {
         const selectedItems = cloneDeep(this.state.selectedItems);
-        const itemCount = selectedItems[id] || 0;
-        selectedItems[id] = itemCount + 1;
+        const itemCount = selectedItems[_id] || 0;
+        selectedItems[_id] = itemCount + 1;
         this.setState({
             selectedItems: selectedItems,
             basePrice : this.state.basePrice + price,
         });
     }
 
-    decrementItem(id, price) {
+    decrementItem(_id, price) {
         const selectedItems = cloneDeep(this.state.selectedItems);
-        const itemCount = selectedItems[id] || 0;
+        const itemCount = selectedItems[_id] || 0;
         if(itemCount > 0) {
-            selectedItems[id] = itemCount - 1;
-            if(selectedItems[id] === 0) {
-                delete selectedItems[id];
+            selectedItems[_id] = itemCount - 1;
+            if(selectedItems[_id] === 0) {
+                delete selectedItems[_id];
             }
             this.setState({
                 selectedItems: selectedItems,
@@ -64,10 +64,10 @@ class Items extends React.Component {
 
     renderEachItem(item) {
         return(
-            <Card className="shadow bg-white rounded" key={item.id}>
+            <Card className="shadow bg-white rounded" key={item._id}>
                 <Card.Body className="item-card">
                     <Card.Title className="item-name">{item.name}({item.description})</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted item-details">Price(Each):{item.price} <span className="order-content"><i className="material-icons" onClick={() => this.decrementItem(item.id, item.price)}>remove_circle_outline</i><span className="quantity">{this.state.selectedItems[item.id] || '0'}</span><i className="material-icons" onClick={() => this.incrementItem(item.id, item.price)}>add_circle_outline</i></span></Card.Subtitle>
+                    <Card.Subtitle className="mb-2 text-muted item-details">Price(Each):{item.price} <span className="order-content"><i className="material-icons" onClick={() => this.decrementItem(item._id, item.price)}>remove_circle_outline</i><span className="quantity">{this.state.selectedItems[item._id] || '0'}</span><i className="material-icons" onClick={() => this.incrementItem(item._id, item.price)}>add_circle_outline</i></span></Card.Subtitle>
                 </Card.Body>
             </Card>
         )
