@@ -23,14 +23,14 @@ const restaurantReducer = (state = {}, action) => {
         case 'FETCH_MATCHING_RESTAURANTS_SUCCESS':
             return Object.assign({}, state, {
                 restaurants: action.payload.restaurants,
-                error: '',
+                errorSearch : '',
                 foundMatching: true,
             })
         case 'FETCH_TOP_RESTAURANTS_FAILURE':
         case 'FETCH_MATCHING_RESTAURANTS_FAILURE':
             return Object.assign({}, state, {
                 restaurants: [],
-                error: action.payload.error
+                errorSearch : action.payload.errorSearch
             })
         case 'FETCH_ITEMS_SUCCESS':
             return Object.assign({}, state, {

@@ -154,7 +154,7 @@ class Home extends React.Component {
     }
 
     render() {
-        if(this.props.restaurants || this.props.error || this.props.orders)
+        if(this.props.restaurants || this.props.error || this.props.orders) {
             return(
                 <div className="home"> 
                     <Header userDetails={this.props.user} />
@@ -162,6 +162,7 @@ class Home extends React.Component {
                     {this.props.user && this.props.user.type === 'c' && !this.props.error ? this.renderCustomerView() : this.renderOwnerView()}
                 </div>
             );
+        }
         else 
             return (<div className="loader"></div>);
     }

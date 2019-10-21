@@ -67,11 +67,10 @@ const fetchMatchingRestaurantsSuccess = (restaurants) => {
 }
 
 const fetchMatchingRestaurantsFailure = () => {
-    console.log("error inside");
     return {
         type: 'FETCH_MATCHING_RESTAURANTS_FAILURE',
         payload: {
-            error: 'No restaurants found!'
+            errorSearch: 'No restaurants found!'
         }
     }
 }
