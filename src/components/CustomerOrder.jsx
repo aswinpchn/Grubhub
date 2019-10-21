@@ -28,11 +28,11 @@ class CustomerOrder extends React.Component {
         });
     }
 
-    renderItems(id, menu) {
+    renderItems(id, orderDetails) {
         if(this.state.selectedOrderId === id) {
             return(
-               menu.map((item) => 
-                    <Card className="shadow bg-white rounded" key={item.id}>
+                orderDetails.map((item) => 
+                    <Card className="shadow bg-white rounded" key={item._id}>
                         <Card.Body className="item-card">
                             <Card.Title className="item-name">Item name : {item.name}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted"><span className="order-contents">Price : {item.price} </span><span className="order-contents"> Quantity : {item.quantity}</span></Card.Subtitle>
@@ -46,14 +46,14 @@ class CustomerOrder extends React.Component {
     renderOrderList(customerOrders) {
         return customerOrders.orders.map((order) => 
         <>
-            <Card className="shadow bg-white rounded" style={{height: "5rem"}} key={order.id} onClick={() => this.handleOrderSelect(order.id)}>
+            <Card className="shadow bg-white rounded" style={{height: "5rem"}} key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
                 <Card.Body>
-                    <Card.Title>Restaurant name : {order.restaurantname}</Card.Title>
+                    <Card.Title>Restaurant name : {order.restaurantid}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted"><span className="order-contents">Time : {new Date(Date.parse(order.ordertime)).toDateString()}</span><span className="order-contents">Status : {order.status}</span></Card.Subtitle>
                 </Card.Body>
             </Card>
             <div className="item-list">
-                {this.renderItems(order.id, order.menu)}
+                {this.renderItems(order._id, order.orderDetails)}
             </div>
         </>
     );
