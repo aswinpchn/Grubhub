@@ -16,7 +16,7 @@ const orderSchema = mongoose.Schema({
     restaurantid : mongoose.Schema.Types.ObjectId,
     cost : Number,
     status : String,
-    Time : Date,
+    ordertime : Date,
     orderDetails : [orderDetailsSchema],
 });
 

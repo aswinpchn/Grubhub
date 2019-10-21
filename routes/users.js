@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const dbCall = require('../helper'); 
 const User = require('../model/user');
+const Order = require('../model/order');
 const mongoose = require('mongoose');
 const Restaurant = require('../model/restaurant');
 
@@ -204,77 +205,45 @@ router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
   });
 });
 
-  router.get('/:customerid/orders', (req, res) => {
-    if(!req.params.customerid) {
-      res.writeHead(400);
-      req.end('wrong parameters');
-    } else {
-      let responsePromise = dbCall(`select * from grubhub.order where customerid_order=${req.params.customerid}`);
-      responsePromise.then(orderResponse=> {
-        let result = {
-          numberoforders : 0
-        };
-        if(orderResponse.length == 0) {
+router.get('/:customerid/orders', (req, res) => { // Get orders for a user
+  if(!req.params.customerid) {
+    res.writeHead(400);
+    req.end('wrong parameters');
+  } else {
+    let responsePromise = Order.find({ customerid : req.params.customerid })
+    responsePromise.then(orderResponse=> {
+      let result = {
+        numberoforders : 0
+      };
+      if(orderResponse.length == 0) {
+        res.writeHead(200, {
+          'Content-type' : 'application/json'
+        });
+        res.end(JSON.stringify(result));
+      } else {
+        let i = 0;
+        result.numberoforders = orderResponse.length;
+
+        let restaurantPromise = Restaurant.findOne( { _id : orderResponse[0].restaurantid } );
+
+        restaurantPromise.then(resp => {
+          orderResponse.restaurantname = resp.name;
+          result.orders = orderResponse;
           res.writeHead(200, {
             'Content-type' : 'application/json'
           });
           res.end(JSON.stringify(result));
-        } else {
-          let i = 0;
-          result.numberoforders = orderResponse.length;
-          let restaurantFetchPromise = [];
-          
-          result.orders = [];
-          orderResponse.forEach(element => {
-            result.orders[i] = {};
-            result.orders[i].cost = element.cost;
-            result.orders[i].status = element.status;
-            result.orders[i].ordertime = element.ordertime;
-            result.orders[i].id = element.id;
-            restaurantFetchPromise[i] = dbCall(`select * from restaurant where id=${element.restaurantid_order}`);
-            i++; 
-          });
-          Promise.all(restaurantFetchPromise).then(response=>{
-            let j = 0;
-            response.forEach(element=>{
-              result.orders[j].restaurantname = element[0].name;
-              result.orders[j].cuisine = element[0].cuisine;
-              result.orders[j].image = element[0].image;
-              j++;
-            });
-            
-            let k = 0;
-            let orderFetchPromise = [];
-            orderResponse.forEach(element => {
-              orderFetchPromise[k] = dbCall(`select * from orderdetails where orderid_orderdetails=${element.id}`);
-              k++; 
-            });
-            Promise.all(orderFetchPromise).then(response=>{
-              let m = 0;
-              response.forEach(element=>{
-                result.orders[m].menu = [];
-                Object.assign(result.orders[m].menu,{}, element);
-                m++;
-              });
-              res.writeHead(200, {
-                'Content-type' : 'application/json'
-              });
-              res.end(JSON.stringify(result));
-            }).catch(error=>{
-              res.writeHead(500);
-              res.send('db error');
-            });
-  
-          }).catch(error=>{
-            res.writeHead(500);
-            res.send('db error');
-          });
-        }
-      }).catch(error=> {
-        res.writeHead(500);
-        res.send('db error');
-      });
-    }
-  });
+        }).catch(err => {
+          console.log(err);
+          res.writeHead(500);
+          res.send('db error');
+        });
+      }
+    }).catch(error=> {
+      res.writeHead(500);
+      res.send('db error');
+    });
+  }
+});
 
 module.exports = router;

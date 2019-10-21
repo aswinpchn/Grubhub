@@ -35,7 +35,7 @@ router.post('/:orderid', (req, res) => {
     }
 });
 
-router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
+router.put('/',(req, res) => { // Create a order -> menuid is in payload.
     if(!req.body.restaurantid || !req.body.cost || !req.body.status || !req.body.customerid ) {
         res.writeHead(400);
         res.end("wrong parameters");
@@ -74,7 +74,7 @@ router.put('/',(req, res) => { // Insert a order -> menuid is in payload.
                 restaurantid : req.body.restaurantid,
                 cost : req.body.cost,
                 status : req.body.status,
-                Time : new Date(),
+                ordertime : new Date(),
                 orderDetails : orderDetails,
             });
 
