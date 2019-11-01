@@ -5,10 +5,11 @@ const User = require('../model/user');
 const Order = require('../model/order');
 const mongoose = require('mongoose');
 const Restaurant = require('../model/restaurant');
+const jwt = require('jsonwebtoken');
+const { secret } = require('../constants');
 
 
 router.get('/:id', (req, res) => { // get user by id
-  
     if(!req.params.id)
     {
       res.writeHead(400);
@@ -45,7 +46,7 @@ router.post('/login', (req, res) => { // Login
     res.writeHead(400);
     res.end("wrong parameters");
   } else {
-    
+
     let responsePromise = User.find({email : req.body.email });
     responsePromise.then((response) => {
       if(response.length !== 1) { // but yeah, wont or should go more than one as signup email restriction is there.
@@ -59,8 +60,8 @@ router.post('/login', (req, res) => { // Login
       if(response[0].password !== req.body.password) {
         throw "invalid password";
       }
-      let c = {username : req.body.email, password : req.body.password, type : req.body.type};
-      res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
+      let token = jwt.sign(req.body, secret);
+      res.cookie('cookie',token,{maxAge: 900000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
       });

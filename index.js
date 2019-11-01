@@ -6,7 +6,7 @@ var cors = require('cors');
 const restaurantsRoute = require('./routes/restaurants');
 const usersRoute = require('./routes/users');
 const ordersRoute = require('./routes/orders');
-const URL = require('./constants');
+const { URL } = require('./constants');
 
 app.use(cookieParser()) // needed if you want to sign a cookie
 // res.cookie("aswin","21"); // in this way we can set a cookie in our client side

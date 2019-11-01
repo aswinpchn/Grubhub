@@ -1,2 +1,3 @@
 const URL = "http://localhost:3000";
-module.exports =  URL;
+const secret = "test";
+module.exports =  { URL, secret };
