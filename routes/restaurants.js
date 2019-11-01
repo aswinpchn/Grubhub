@@ -4,8 +4,9 @@ const dbCall = require('../helper');
 const Restaurant = require('../model/restaurant'); 
 const mongoose = require('mongoose');
 const Menu = require('../model/menu');
+const verifyToken = require('../verifyToken');
 
-router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
+router.get('/owner/:id', verifyToken, (req, res) => { // Get a restaurant by ownerid.
     if(!req.params.id)
     {
         res.writeHead(400);
@@ -37,7 +38,7 @@ router.get('/owner/:id', (req, res) => { // Get a restaurant by ownerid.
     }
 });
 
-router.put('/:restaurantid/menu', (req, res) => { // Add item to menu.
+router.put('/:restaurantid/menu', verifyToken, (req, res) => { // Add item to menu.
   if(!req.body.category || !req.body.name || !req.body.description || !req.body.price || !req.params.restaurantid) {
     res.writeHead(400);
     res.end("wrong parameters");
@@ -68,7 +69,7 @@ router.put('/:restaurantid/menu', (req, res) => { // Add item to menu.
   }
 });
 
-router.post('/:restaurantid/menu', (req, res) => { // Update a menu item.
+router.post('/:restaurantid/menu', verifyToken, (req, res) => { // Update a menu item.
     if(!req.body.id) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -89,7 +90,7 @@ router.post('/:restaurantid/menu', (req, res) => { // Update a menu item.
     }
 });
 
-router.get('/search/:keyword', (req, res) => { // Search all restaurants by item name
+router.get('/search/:keyword', verifyToken, (req, res) => { // Search all restaurants by item name
     if(!req.params.keyword) {
       res.writeHead(400);
       res.end("wrong parameters");
@@ -107,7 +108,7 @@ router.get('/search/:keyword', (req, res) => { // Search all restaurants by item
     }
 });
 
-router.get('/', (req, res) => { // Get all restaurants.
+router.get('/', verifyToken, (req, res) => { // Get all restaurants.
   const responsePromise = Restaurant.find();
   responsePromise.then((response) => {
     res.writeHead(200, {
@@ -120,7 +121,7 @@ router.get('/', (req, res) => { // Get all restaurants.
   });
 });
 
-router.get('/:restaurantid/orders', (req, res) => {
+router.get('/:restaurantid/orders', verifyToken, (req, res) => {
   if(!req.params.restaurantid) {
     res.writeHead(400);
     res.send('wrong paramaters');
@@ -194,7 +195,7 @@ router.get('/:restaurantid/orders', (req, res) => {
   }
 });
 
-router.get('/:restaurantid/menu', (req, res) => { // get menu by restaurantid
+router.get('/:restaurantid/menu', verifyToken, (req, res) => { // get menu by restaurantid
   if(!req.params.restaurantid) {
     res.writeHead(400);
     res.send('wrong paramaters');

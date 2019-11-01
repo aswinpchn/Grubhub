@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Order = require('../model/order');
 const OrderDetails = require('../model/orderDetails');
 const Restaurant = require('../model/restaurant');
+const verifyToken = require('../verifyToken');
 
 const itemsValidity = (req) => {
     return req.body.items.every((element) => {
@@ -15,7 +16,7 @@ const itemsValidity = (req) => {
         });
 }
 
-router.post('/:orderid', (req, res) => {
+router.post('/:orderid', verifyToken, (req, res) => {
     console.log(req.body);
     if(!req.body.status) {
         res.writeHead(400);
@@ -35,7 +36,7 @@ router.post('/:orderid', (req, res) => {
     }
 });
 
-router.put('/',(req, res) => { // Create a order -> menuid is in payload.
+router.put('/', verifyToken, (req, res) => { // Create a order -> menuid is in payload.
     if(!req.body.restaurantid || !req.body.cost || !req.body.status || !req.body.customerid ) {
         res.writeHead(400);
         res.end("wrong parameters");

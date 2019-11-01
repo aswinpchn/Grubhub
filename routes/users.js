@@ -6,9 +6,10 @@ const Order = require('../model/order');
 const mongoose = require('mongoose');
 const Restaurant = require('../model/restaurant');
 const { secret } = require('../constants');
+const jwt = require('jsonwebtoken');
+const verifyToken = require('../verifyToken');
 
-
-router.get('/:id', (req, res) => { // get user by id
+router.get('/:id', verifyToken, (req, res) => { // get user by id
     if(!req.params.id)
     {
       res.writeHead(400);
@@ -60,7 +61,7 @@ router.post('/login', (req, res) => { // Login
         throw "invalid password";
       }
       let token = jwt.sign(req.body, secret);
-      res.cookie('cookie',token,{maxAge: 900000, httpOnly: false, path : '/'});
+      res.cookie('cookie',token,{maxAge: 9000000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
       });
@@ -186,7 +187,7 @@ router.put('/ownerSignUp', (req, res) => { // Owner SignUp
   }
 });
   
-router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
+router.post('/', verifyToken, (req, res) => { // Update profile (Both customer and buyer.)
   if(!req.body.name && !req.body.email) {
     res.writeHead(500);
     res.end("db error");
@@ -209,7 +210,7 @@ router.post('/', (req, res) => { // Update profile (Both customer and buyer.)
   });
 });
 
-router.get('/:customerid/orders', (req, res) => { // Get orders for a user
+router.get('/:customerid/orders', verifyToken, (req, res) => { // Get orders for a user
   if(!req.params.customerid) {
     res.writeHead(400);
     req.end('wrong parameters');
