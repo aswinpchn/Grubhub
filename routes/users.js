@@ -84,8 +84,64 @@ router.post('/login', (req, res) => { // Login
   }
 });
 
-router.post('/reLogin', (req, res) => {
-
+router.post('/reLogin',  (req, res) => {
+  if(!req.body.token) {
+    res.writeHead(401);
+    res.end("token not-found");
+  } else {
+    jwt.verify(req.body.token, secret, function(err, decoded) {
+      if(err) {
+          console.log(err.message);
+          res.writeHead(403);
+          res.end("Tampered token");
+      } else {
+          req.body.email = decoded.email;
+          req.body.password = decoded.password;
+          req.body.type = decoded.type;
+          
+          if(!req.body.email || !req.body.password || !req.body.type) {
+            res.writeHead(400);
+            res.end("wrong parameters");
+          } else {
+        
+            let responsePromise = User.find({email : req.body.email });
+            responsePromise.then((response) => {
+              if(response.length !== 1) { // but yeah, wont or should go more than one as signup email restriction is there.
+                throw "no user";
+              }
+        
+              if(response[0].type !== req.body.type) {
+                throw "wrong user type";
+              }
+        
+              if(response[0].password !== req.body.password) {
+                throw "invalid password";
+              }
+              let token = jwt.sign(req.body, secret);
+              res.cookie('cookie',token,{maxAge: 9000000, httpOnly: false, path : '/'});
+              res.writeHead(200, { 
+                'Content-type' : 'application/json'
+              });
+              res.end(JSON.stringify(response[0]));
+            }).catch((error)=>{
+              if(error == "no user") {
+                res.writeHead(404);
+                res.end("user not found");
+              } else if(error == "invalid password") {
+                res.writeHead(401);
+                res.end("invalid password");
+              } else if(error == "wrong user type") {
+                res.writeHead(401);
+                res.end("wrong user type");
+              } else {
+                res.writeHead(500);
+                res.end("db error");
+              }
+            });
+          }
+      }
+      });
+  }
 });
   
 router.put('/customerSignUp', (req, res) => { // Customer SignUp
