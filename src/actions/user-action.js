@@ -11,6 +11,13 @@ const getLogin = (username, password, type) => {
     });
 }
 
+const getReLogin = (token) => {
+    axios.defaults.withCredentials = true;
+    return axios.post(`${URL}/user/reLogin`, {
+        token : token
+    });
+}
+
 const updateUser = (user) => {
     axios.defaults.withCredentials = true;
 
@@ -128,6 +135,17 @@ export const loginTrigger = (username, password, type) => {
     return dispatch => {
       return getLogin(username, password, type).then(response => {
           dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data._id));
+      }).catch(error => {
+          console.log(error);
+          dispatch(loginFailure('Something went wrong! Please try again later'));
+      });
+    };
+}
+
+export const reLoginTrigger = (token) => {
+    return dispatch => {
+      return getReLogin(token).then(response => {
+          dispatch(loginSuccess(response.data.email, response.data.password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data._id));
       }).catch(error => {
           console.log(error);
           dispatch(loginFailure('Something went wrong! Please try again later'));
