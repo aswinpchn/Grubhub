@@ -5,7 +5,6 @@ const User = require('../model/user');
 const Order = require('../model/order');
 const mongoose = require('mongoose');
 const Restaurant = require('../model/restaurant');
-const jwt = require('jsonwebtoken');
 const { secret } = require('../constants');
 
 
@@ -82,6 +81,10 @@ router.post('/login', (req, res) => { // Login
       }
     });
   }
+});
+
+router.post('/reLogin', (req, res) => {
+
 });
   
 router.put('/customerSignUp', (req, res) => { // Customer SignUp
