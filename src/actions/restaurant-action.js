@@ -1,24 +1,40 @@
 import axios from 'axios';
 import { URL } from '../constants';
+import cookie from 'react-cookies';
 
 const tryFetchingOwnedRestaurant = (ownerid) => {
-    return axios.get(`${URL}/restaurant/owner/${ownerid}`);
+    return axios.get(`${URL}/restaurant/owner/${ownerid}`,  {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 };
 
 const tryFetchingMatchingRestaurants = (keyword) => {
-    return axios.get(`${URL}/restaurant/search/${keyword}`);
+    return axios.get(`${URL}/restaurant/search/${keyword}`, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const tryFetchTopRestaurants = () => {
-    return axios.get(`${URL}/restaurant`);
+    return axios.get(`${URL}/restaurant`, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const tryFetchingOrdersForRestaurant = (restaurantId) => {
-    return axios.get(`${URL}/restaurant/${restaurantId}/orders`);
+    return axios.get(`${URL}/restaurant/${restaurantId}/orders`,  {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const tryFetchingItems = (restaurantId) => {
-    return axios.get(`${URL}/restaurant/${restaurantId}/menu`);
+    return axios.get(`${URL}/restaurant/${restaurantId}/menu`,  {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const fetchOrdersForRestaurantSuccess = (orders) => {

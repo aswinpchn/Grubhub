@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { URL } from '../constants';
+import cookie from 'react-cookies';
 
 const getLogin = (username, password, type) => {
     axios.defaults.withCredentials = true;
@@ -19,6 +20,9 @@ const updateUser = (user) => {
         password : user.password,
         phone : user.phone,
         type : user.type,
+    }, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
     });
 }
 

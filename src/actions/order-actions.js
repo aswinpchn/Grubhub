@@ -1,19 +1,29 @@
 import axios from 'axios';
 import { URL } from '../constants';
 import { fetchRestaurantOrdersTrigger } from './restaurant-action';
+import cookie from 'react-cookies';
 
 const tryCreatingOrder = (request) => {
     axios.defaults.withCredentials = true;
-    return axios.put(`${URL}/order/`, request);
+    return axios.put(`${URL}/order/`, request, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 };
 
 const tryGettingCustomerOrder = (userid) => {
-    return axios.get(`${URL}/user/${userid}/orders`);
+    return axios.get(`${URL}/user/${userid}/orders`, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const tryUpdatingOrderStatus = (orderId, request) => {
     console.log(request);
-    return axios.post(`${URL}/order/${orderId}`, request);
+    return axios.post(`${URL}/order/${orderId}`, request, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
 }
 
 const updateOrderStatusSuccess = (response) => {
