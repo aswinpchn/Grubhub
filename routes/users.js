@@ -255,9 +255,15 @@ router.post('/', verifyToken, (req, res) => { // Update profile (Both customer a
     if(response.nModified != 1) {
       throw "db error";
     }
-
-    let c = {username : req.body.email, password : req.body.password, type : req.body.type};
-    res.cookie('cookie',JSON.stringify(c),{maxAge: 900000, httpOnly: false, path : '/'});
+    
+    let newBody = {
+      email : req.body.email,
+      password : req.body.password,
+      type : req.body.type
+    };
+    
+    let token = jwt.sign(newBody, secret);
+    res.cookie('cookie', token,{maxAge: 9000000, httpOnly: false, path : '/'});
     res.writeHead(200);
     res.end("success");
   }).catch((error) => { // Failure only if DB is down, all validations are done front end.
