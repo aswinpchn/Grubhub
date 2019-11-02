@@ -20,3 +20,5 @@ module.exports = passport;
 By default, if authentication fails, Passport will respond with a 401 Unauthorized status, and any additional route handlers will not be invoked. 
 If authentication succeeds, the next handler will be invoked and the <<<req.user>>>> property will be set to the authenticated user.
 */
+
+// https://blog.usejournal.com/sessionless-authentication-withe-jwts-with-node-express-passport-js-69b059e4b22c  (Very good).

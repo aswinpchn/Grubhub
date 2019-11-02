@@ -28,3 +28,9 @@ const verifyToken = (req, res, next) => {
 }
 
 module.exports = verifyToken;
+
+// https://jwt.io/#
+// https://www.youtube.com/watch?v=7nafaH9SddU
+// https://github.com/auth0/node-jsonwebtoken
+
+// See passport page also.
