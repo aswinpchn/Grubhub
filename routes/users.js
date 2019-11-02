@@ -8,8 +8,9 @@ const Restaurant = require('../model/restaurant');
 const { secret } = require('../constants');
 const jwt = require('jsonwebtoken');
 const verifyToken = require('../verifyToken');
+const passport = require('../passport');
 
-router.get('/:id', verifyToken, (req, res) => { // get user by id
+router.get('/:id', passport.authenticate('jwt', { session: false }), (req, res) => { // get user by id
     if(!req.params.id)
     {
       res.writeHead(400);
@@ -39,7 +40,7 @@ router.get('/:id', verifyToken, (req, res) => { // get user by id
         }
       });
     }
-  });
+});
   
 router.post('/login', (req, res) => { // Login
   if(!req.body.email || !req.body.password || !req.body.type) {
@@ -243,7 +244,7 @@ router.put('/ownerSignUp', (req, res) => { // Owner SignUp
   }
 });
   
-router.post('/', verifyToken, (req, res) => { // Update profile (Both customer and buyer.)
+router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => { // Update profile (Both customer and buyer.)
   if(!req.body.name && !req.body.email) {
     res.writeHead(500);
     res.end("db error");
@@ -272,7 +273,7 @@ router.post('/', verifyToken, (req, res) => { // Update profile (Both customer a
   });
 });
 
-router.get('/:customerid/orders', verifyToken, (req, res) => { // Get orders for a user
+router.get('/:customerid/orders', passport.authenticate('jwt', { session: false }), (req, res) => { // Get orders for a user
   if(!req.params.customerid) {
     res.writeHead(400);
     req.end('wrong parameters');

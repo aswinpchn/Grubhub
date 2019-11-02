@@ -6,6 +6,7 @@ const Order = require('../model/order');
 const OrderDetails = require('../model/orderDetails');
 const Restaurant = require('../model/restaurant');
 const verifyToken = require('../verifyToken');
+const passport = require('../passport');
 
 const itemsValidity = (req) => {
     return req.body.items.every((element) => {
@@ -16,7 +17,7 @@ const itemsValidity = (req) => {
         });
 }
 
-router.post('/:orderid', verifyToken, (req, res) => {
+router.post('/:orderid', passport.authenticate('jwt', { session: false }), (req, res) => {
     console.log(req.body);
     if(!req.body.status) {
         res.writeHead(400);
@@ -36,7 +37,7 @@ router.post('/:orderid', verifyToken, (req, res) => {
     }
 });
 
-router.put('/', verifyToken, (req, res) => { // Create a order -> menuid is in payload.
+router.put('/', passport.authenticate('jwt', { session: false }), (req, res) => { // Create a order -> menuid is in payload.
     if(!req.body.restaurantid || !req.body.cost || !req.body.status || !req.body.customerid ) {
         res.writeHead(400);
         res.end("wrong parameters");
