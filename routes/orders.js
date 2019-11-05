@@ -17,15 +17,14 @@ const itemsValidity = (req) => {
         });
 }
 
-router.post('/:orderid', passport.authenticate('jwt', { session: false }), (req, res) => {
-    console.log(req.body);
+router.post('/:orderid', passport.authenticate('jwt', { session: false }), (req, res) => { // Update order status
     if(!req.body.status) {
         res.writeHead(400);
         res.end("wrong parameters");
     } else {
-        let responsePromise = dbCall(`update grubhub.order set status='${req.body.status}' where id=${req.params.orderid}`);
+        let responsePromise = Order.updateOne({ _id : req.params.orderid }, { status : req.body.status });
         responsePromise.then(response => {
-            if(response.affectedRows > 0) {
+            if(response.nModified > 0) {
                 res.writeHead(200);
                 res.end('success');
             }
