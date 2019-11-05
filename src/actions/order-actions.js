@@ -26,15 +26,6 @@ const tryUpdatingOrderStatus = (orderId, request) => {
     });
 }
 
-const updateOrderStatusSuccess = (response) => {
-    return {
-        type : 'ORDER_UPDATE_SUCCESS',
-        payload : {
-            orders : response
-        },
-    }
-}
-
 const updateOrderStatusFailure = () => {
     return {
         type : 'ORDER_UPDATE_FAILURE',

@@ -37,7 +37,7 @@ class Home extends React.Component {
     }
 
     handleStatusUpdate(orderId, status) {
-        this.props.updateOrderStatus(orderId, this.props.restaurants.id, status);
+        this.props.updateOrderStatus(orderId, this.props.restaurants._id, status);
     }
 
     renderItems(restaurantId) {
