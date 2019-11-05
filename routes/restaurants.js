@@ -15,19 +15,17 @@ router.get('/owner/:id', passport.authenticate('jwt', { session: false }), (req,
     } else {
         let user = req.params.id;
 
-        let responsePromise = dbCall(`select * from restaurant where ownerid=${user}`);
+        let responsePromise = Restaurant.findOne({ ownerid : user });
         responsePromise.then((response) => {
-
-          if(response.length !== 1) {
-              throw "no restaurant";
-          }
+          console.log(response);
 
           res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
               'Content-type' : 'application/json'
           });
-          res.end(JSON.stringify(response[0]));    // We can't send JSON directly we have to change it to string using stringify
+          res.end(JSON.stringify(response));    // We can't send JSON directly we have to change it to string using stringify
 
         }).catch((error) => {
+            console.log(error);
             if(error == "no restaurant") {
                 res.writeHead(404);
                 res.end("restaurant not found");
