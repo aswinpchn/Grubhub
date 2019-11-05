@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 const Menu = require('../model/menu');
 const verifyToken = require('../verifyToken');
 const passport = require('../passport');
+const Order = require('../model/order');
+const OrderDetails = require('../model/orderDetails');
+const User = require('../model/user');
 
 router.get('/owner/:id', passport.authenticate('jwt', { session: false }), (req, res) => { // Get a restaurant by ownerid.
     if(!req.params.id)
@@ -17,8 +20,6 @@ router.get('/owner/:id', passport.authenticate('jwt', { session: false }), (req,
 
         let responsePromise = Restaurant.findOne({ ownerid : user });
         responsePromise.then((response) => {
-          console.log(response);
-
           res.writeHead(200, {  // //res.type('json')  // This also will work similar to setting content type application/json
               'Content-type' : 'application/json'
           });
@@ -125,8 +126,9 @@ router.get('/:restaurantid/orders', passport.authenticate('jwt', { session: fals
     res.writeHead(400);
     res.send('wrong paramaters');
   } else {
-    let responsePromise = dbCall(`select * from grubhub.order where restaurantid_order=${req.params.restaurantid}`);
+    let responsePromise = Order.find({ restaurantid : req.params.restaurantid });
     responsePromise.then(orderResponse=> {
+      //console.log(orderResponse);
       let result = {
         numberoforders : 0
       };
@@ -146,41 +148,26 @@ router.get('/:restaurantid/orders', passport.authenticate('jwt', { session: fals
           result.orders[i].cost = element.cost;
           result.orders[i].status = element.status;
           result.orders[i].ordertime = element.ordertime;
-          result.orders[i].id = element.id;
-          customerFetchPromise[i] = dbCall(`select * from user where id=${element.customerid_order}`);
+          result.orders[i]._id = element._id;
+          result.orders[i].menu = element.orderDetails;
+          customerFetchPromise[i] = User.findOne({ _id : element.customerid });
           i++; 
         });
         Promise.all(customerFetchPromise).then(response=>{
+          
           let j = 0;
           response.forEach(element=>{
-            result.orders[j].customername = element[0].name;
-            result.orders[j].email = element[0].email;
-            result.orders[j].phone = element[0].phone;
-            result.orders[j].image = element[0].image;
+            result.orders[j].customername = element.name;
+            result.orders[j].email = element.email;
+            result.orders[j].phone = element.phone;
+            result.orders[j].image = element.image;
             j++;
           });
           
-          let k = 0;
-          let orderFetchPromise = [];
-          orderResponse.forEach(element => {
-            orderFetchPromise[k] = dbCall(`select * from orderdetails where orderid_orderdetails=${element.id}`);
-            k++; 
+          res.writeHead(200, {
+            'Content-type' : 'application/json'
           });
-          Promise.all(orderFetchPromise).then(response=>{
-            let m = 0;
-            response.forEach(element=>{
-              result.orders[m].menu = [];
-              Object.assign(result.orders[m].menu,{}, element);
-              m++;
-            });
-            res.writeHead(200, {
-              'Content-type' : 'application/json'
-            });
-            res.end(JSON.stringify(result));
-          }).catch(error=>{
-            res.writeHead(500);
-            res.send('db error');
-          });
+          res.end(JSON.stringify(result));
 
         }).catch(error=>{
           res.writeHead(500);
