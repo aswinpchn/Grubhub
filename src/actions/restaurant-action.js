@@ -144,7 +144,7 @@ export const fetchOwnedRestaurantTrigger = (ownerid) => {
     return dispatch => {
       return tryFetchingOwnedRestaurant(ownerid).then(response => {
           dispatch(fetchingOwnedRestaurantSuccess(response.data));
-          dispatch(fetchRestaurantOrdersTrigger(response.data.id));
+          dispatch(fetchRestaurantOrdersTrigger(response.data._id));
       }).catch(error => {
           dispatch(fetchingOwnedRestaurantFailure(error));
       });
@@ -202,7 +202,6 @@ export const logOut = () => {
 }
 
 export const fetchRestaurantOrdersTrigger = (restaurantId) => {
-    console.log(restaurantId);
     return dispatch => {
         return tryFetchingOrdersForRestaurant(restaurantId).then(response => {
             dispatch(fetchOrdersForRestaurantSuccess(response.data))
