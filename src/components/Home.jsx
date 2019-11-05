@@ -90,7 +90,6 @@ class Home extends React.Component {
     }
 
     handleOrderSelect(id) {
-        console.log(id);
         this.setState({
             selectedOrderId: id
         });
@@ -106,23 +105,23 @@ class Home extends React.Component {
     renderOrderList(customerOrders) {
         return customerOrders.map((order) => 
         <>
-            <Card className="shadow bg-white rounded" key={order.id} onClick={() => this.handleOrderSelect(order.id)}>
+            <Card className="shadow bg-white rounded" key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
                 <Card.Body>
-                    <Card.Title>Order Id : {order.id}</Card.Title>
+                    <Card.Title>Order Id : {order._id}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
                         <span className="order-contents">Time : {new Date(Date.parse(order.ordertime)).toString().split('GMT')[0]}</span>
                         <span className="order-contents">Status : {order.status}</span>
                         <span className="order-contents">
-                            <button onClick={() => this.handleStatusUpdate(order.id, 'Accepted')}>Accepted</button>
-                            <button onClick={() => this.handleStatusUpdate(order.id, 'Cooking')}>Cooking</button>
-                            <button onClick={() => this.handleStatusUpdate(order.id, 'On the way')}>On the way</button>
-                            <button onClick={() => this.handleStatusUpdate(order.id, 'Delivered')}>Delivered</button>
-                            <button onClick={() => this.handleStatusUpdate(order.id, 'Cancelled')}>Cancel</button>
+                            <button onClick={() => this.handleStatusUpdate(order._id, 'Accepted')}>Accepted</button>
+                            <button onClick={() => this.handleStatusUpdate(order._id, 'Cooking')}>Cooking</button>
+                            <button onClick={() => this.handleStatusUpdate(order._id, 'On the way')}>On the way</button>
+                            <button onClick={() => this.handleStatusUpdate(order._id, 'Delivered')}>Delivered</button>
+                            <button onClick={() => this.handleStatusUpdate(order._id, 'Cancelled')}>Cancel</button>
                         </span>
                     </Card.Subtitle>
                 </Card.Body>
             </Card>
-            {this.renderOrderItems(order.id, order.menu)}
+            {this.renderOrderItems(order._id, order.menu)}
         </>
     );
     }
