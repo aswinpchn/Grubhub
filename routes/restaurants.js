@@ -56,7 +56,7 @@ router.put('/:restaurantid/menu', passport.authenticate('jwt', { session: false 
 
   let insertUserResponse  = Restaurant.updateOne({ _id :  req.params.restaurantid }, { $push : { menu : menu } });
   insertUserResponse.then((response) => {
-    if(response.nmodified == 1) {
+    if(response.nModified == 1) {
       res.writeHead(200);
       res.end("success");
     } else {
@@ -171,12 +171,12 @@ router.get('/:restaurantid/orders', passport.authenticate('jwt', { session: fals
 
         }).catch(error=>{
           res.writeHead(500);
-          res.send('db error');
+          res.end('db error');
         });
       }
     }).catch(error=> {
       res.writeHead(500);
-      res.send('db error');
+      res.end('db error');
     });
   }
 });
@@ -196,9 +196,48 @@ router.get('/:restaurantid/menu', passport.authenticate('jwt', { session: false 
       res.end(JSON.stringify(result));
     }).catch(error => {
       res.writeHead(500);
-      res.send('db error');
+      res.end('db error');
     });
   }
 });
+
+router.delete('/:restaurantid/menu/:itemid', passport.authenticate('jwt', { session: false }), (req, res) => { // delete a menu from a restaurant
+  if(!req.params.itemid) {
+    res.writeHead(400);
+    res.send('wrong paramaters');
+  } else {
+    let result = {};
+    let responsePromise =  Restaurant.findOne({ _id : req.params.restaurantid })
+    responsePromise.then(response => {
+      const items = response.menu;
+      const index = items.findIndex((item) => {
+       return item._id.toString() == req.params.itemid
+      });
+      if(index >= 0) {
+        items.splice(index, 1);
+        let innerResponsePromise = Restaurant.updateOne({ _id: req.params.restaurantid }, { menu : items });
+        innerResponsePromise.then(response => {
+          if(response.nModified != 1) {
+            throw "db error";
+          }
+          res.writeHead(200);
+          res.end("success");
+        }).catch(error => {
+          console.log(error);
+          res.writeHead(500);
+          res.end('db error');
+        });
+      } else {
+        res.writeHead(400);
+        res.end('wrong item');
+      }
+    }).catch(error => {
+      console.log(error);
+      res.writeHead(500);
+      res.end('db error');
+    });
+  }
+});
+
 
 module.exports = router;
