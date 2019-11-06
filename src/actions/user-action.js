@@ -134,6 +134,7 @@ const logOutTrigger = () => {
 export const loginTrigger = (username, password, type) => {
     return dispatch => {
       return getLogin(username, password, type).then(response => {
+          cookie.save('cookie', response.data.token, {maxAge: 9000000, httpOnly: false, path : '/'});
           dispatch(loginSuccess(username, password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data._id));
       }).catch(error => {
           console.log(error);
