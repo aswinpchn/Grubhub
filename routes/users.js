@@ -62,11 +62,18 @@ router.post('/login', (req, res) => { // Login
         throw "invalid password";
       }
       let token = jwt.sign(req.body, secret);
-      res.cookie('cookie',token,{maxAge: 9000000, httpOnly: false, path : '/'});
+      let result = {};
+      result.name = response[0].name;
+      result.phone = response[0].phone;
+      result.type = response[0].type;
+      result.image = response[0].image;
+      result._id = response[0]._id;
+      result.token = token;
+      //res.cookie('cookie',token,{maxAge: 9000000, httpOnly: false, path : '/'});
       res.writeHead(200, { 
         'Content-type' : 'application/json'
       });
-      res.end(JSON.stringify(response[0]));
+      res.end(JSON.stringify(result));
     }).catch((error)=>{
       if(error == "no user") {
         res.writeHead(404);
