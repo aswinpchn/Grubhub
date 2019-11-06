@@ -146,6 +146,7 @@ export const loginTrigger = (username, password, type) => {
 export const reLoginTrigger = (token) => {
     return dispatch => {
       return getReLogin(token).then(response => {
+          cookie.save('cookie', response.data.token, {maxAge: 9000000, httpOnly: false, path : '/'});
           dispatch(loginSuccess(response.data.email, response.data.password, response.data.name, response.data.phone, response.data.type, response.data.image, response.data._id));
       }).catch(error => {
           console.log(error);
