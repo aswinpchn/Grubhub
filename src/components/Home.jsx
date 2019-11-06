@@ -50,7 +50,7 @@ class Home extends React.Component {
     renderItems(restaurantId) {
         if(this.props.selectedRestaurant)
         return (
-            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user._id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
+            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user.id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
         )
     }
 
