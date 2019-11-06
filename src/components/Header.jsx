@@ -26,7 +26,7 @@ class Header extends React.Component {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <Dropdown.Item href="#/profile">Profile</Dropdown.Item> {/* can use link also, link internally uses href */}
-                            {this.props.userDetails && this.props.userDetails.type === 'c' ? <Dropdown.Item href="#/customerOrders">Orders</Dropdown.Item> : <Dropdown.Item href="#/ownerOrders">Orders</Dropdown.Item> }
+                            {this.props.userDetails && this.props.userDetails.type === 'c' ? <Dropdown.Item href="#/customerOrders">Orders</Dropdown.Item> : <Dropdown.Item href="#/restaurant">Manage Restaurant</Dropdown.Item> }
                             <Dropdown.Item href="#/login" onSelect={this.logOutSelect}>Logout</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>;

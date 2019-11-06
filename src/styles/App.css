@@ -203,3 +203,8 @@ div.mb-2.text-muted.item-details.card-subtitle.h6 {
 .order-contents > button {
   margin-right: 1rem;
 }
+
+.pagination {
+  padding-left: 90% !important;
+  padding-top: 2rem;
+}

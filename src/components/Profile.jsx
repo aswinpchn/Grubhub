@@ -33,7 +33,7 @@ class Profile extends React.Component {
                 email : this.props.user.username,
                 phone : this.props.user.phone,
                 type : this.props.user.type,
-                id : this.props.user.id,
+                id : this.props.user._id,
             });
     }
 
@@ -90,7 +90,7 @@ class Profile extends React.Component {
                         name : this.state.name,
                         phone : this.state.phone,
                         type : this.state.type,
-                        id : this.state.id,
+                        id : this.state._id,
                     }
                     this.props.updateTrigger(user);
                     this.setState({
@@ -109,7 +109,7 @@ class Profile extends React.Component {
                         name : this.state.name,
                         phone : this.state.phone,
                         type : this.state.type,
-                        id : this.state.id,
+                        id : this.state._id,
                     }
                     this.props.updateTrigger(user);
                     this.setState({

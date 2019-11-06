@@ -3,7 +3,7 @@ import Header from './Header';
 import { connect } from 'react-redux';
 import { fetchOwnedRestaurantTrigger, fetchTopRestaurantsTrigger, fetchMatchingRestaurantsTrigger, fetchItemsTrigger, triggerCloseItems, fetchRestaurantOrdersTrigger } from  './../actions/restaurant-action';
 import { updateOrderStatusTrigger } from '../actions/order-actions';
-import { Card, Alert, Form } from 'react-bootstrap';
+import { Card, Alert, Form, Pagination } from 'react-bootstrap';
 import Items from './Items';
 
 class Home extends React.Component {
@@ -12,13 +12,19 @@ class Home extends React.Component {
         super(props);
         this.state = {
             email: '',
-            selectedOrderId: ''
+            selectedOrderId: '',
+            activePage: 1,
+            activeOrderPage: 1
         }
         this.renderRestaurantList = this.renderRestaurantList.bind(this);
         this.renderErrorMessage = this.renderErrorMessage.bind(this);
         this.handleRestaurantSelect = this.handleRestaurantSelect.bind(this);
         this.renderOrderItems = this.renderOrderItems.bind(this);
         this.handleStatusUpdate = this.handleStatusUpdate.bind(this);
+        this.renderPagination = this.renderPagination.bind(this);
+        this.pageClicked  = this.pageClicked.bind(this);
+        this.renderOrderPagination = this.renderOrderPagination.bind(this);
+        this.orderPageClicked = this.orderPageClicked.bind(this);
     }
 
     renderErrorMessage() {
@@ -30,8 +36,9 @@ class Home extends React.Component {
     }
 
     handleRestaurantSelect(restaurantId) {
-        if(this.props.selectedRestaurant && restaurantId === this.props.selectedRestaurant.restaurantId)
+        if(this.props.selectedRestaurant && restaurantId === this.props.selectedRestaurant.restaurantId) {
             this.props.triggerCloseItems();
+        }
         else
             this.props.fetchItemsTrigger(restaurantId);
     }
@@ -43,7 +50,7 @@ class Home extends React.Component {
     renderItems(restaurantId) {
         if(this.props.selectedRestaurant)
         return (
-            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user.id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
+            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user._id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
         )
     }
 
@@ -51,7 +58,7 @@ class Home extends React.Component {
         if(this.state.selectedOrderId === id) {
             return(
                menu.map((item) => 
-                    <Card className="shadow bg-white rounded" key={item.id}>
+                    <Card className="shadow bg-white rounded" key={item._id}>
                         <Card.Body className="item-card">
                             <Card.Title className="item-name">Item name : {item.name}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted"><span>Price : {item.price} </span><span> Quantity : {item.quantity}</span></Card.Subtitle>
@@ -63,11 +70,12 @@ class Home extends React.Component {
     }
 
     renderRestaurantList() {
-        if(this.props.restaurants) {
-            const restaurants = this.props.restaurants.map((restaurant) => {
+        const restaurantsInPageSelected = this.props.restaurants.slice((this.state.activePage-1)*10, this.state.activePage*10);
+        if(restaurantsInPageSelected.length > 0) {
+            const restaurants = restaurantsInPageSelected.map((restaurant) => {
                     return (
                         <>
-                            <Card className="shadow bg-white rounded" key={restaurant.id} onClick={() => this.handleRestaurantSelect(restaurant._id)}>
+                            <Card className="shadow bg-white rounded" key={restaurant._id} onClick={() => this.handleRestaurantSelect(restaurant._id)}>
                                 <Card.Body>
                                     <Card.Title>Restaurant name : {restaurant.name}</Card.Title>
                                     <Card.Subtitle className="mb-2 text-muted">Cuisine : {restaurant.cuisine}</Card.Subtitle>
@@ -103,7 +111,8 @@ class Home extends React.Component {
     }
 
     renderOrderList(customerOrders) {
-        return customerOrders.map((order) => 
+        const customerOrdersToBeDisplayed = customerOrders.slice((this.state.activeOrderPage-1)*10, this.state.activeOrderPage*10);
+        return customerOrdersToBeDisplayed.map((order) => 
         <>
             <Card className="shadow bg-white rounded" key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
                 <Card.Body>
@@ -126,9 +135,52 @@ class Home extends React.Component {
     );
     }
 
+    pageClicked(pageNumber) {
+        this.setState({
+            activePage: pageNumber,
+        });
+    }
+
+    renderPagination() {
+        let items = [];
+        for (let number = 1; number <= Math.ceil(this.props.restaurants.length / 10); number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === this.state.activePage} onClick={() => this.pageClicked(number)}>
+                {number}
+                </Pagination.Item>,
+            );
+        }
+        return(
+            <Pagination>{items}</Pagination>
+        )
+    }
+
+    orderPageClicked(pageNumber) {
+        this.setState({
+            activeOrderPage: pageNumber,
+        });
+    }
+    
+
+    renderOrderPagination() {
+        let items = [];
+        for (let number = 1; number <= Math.ceil(this.props.orders.numberoforders / 10); number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === this.state.activeOrderPage} onClick={() => this.pageClicked(number)}>
+                {number}
+                </Pagination.Item>,
+            );
+        }
+        if(items.length > 0)
+            return(
+                <Pagination>{items}</Pagination>
+            )
+    }
+
     renderOwnerView() {
         let customerOrders = this.props.orders;
         if(customerOrders) {
+            console.log(customerOrders);
             if(customerOrders.numberoforders === 0) {
                 return <div>
                         No orders to display
@@ -136,6 +188,7 @@ class Home extends React.Component {
             } else {
                 return(<>
                 <span>{customerOrders.numberoforders} order(s)</span>
+                {this.renderOrderPagination()}
                 {this.renderOrderList(customerOrders.orders)}
                 </>);
             }
@@ -147,6 +200,7 @@ class Home extends React.Component {
             <>
                 <Form.Control type="text" placeholder="Search" className="search-input" onChange={this.searchRestaurant.bind(this)} />
                 {this.renderErrorMessage()}
+                {this.renderPagination()}
                 {this.renderRestaurantList()}
             </>
         )

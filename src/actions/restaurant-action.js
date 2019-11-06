@@ -37,6 +37,20 @@ const tryFetchingItems = (restaurantId) => {
     });
 }
 
+const tryAddingItem = (item, restaurantId) => {
+    return axios.put(`${URL}/restaurant/${restaurantId}/menu`, item,  {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
+}
+
+const tryDeletingItem = (itemId, restaurantId) => {
+    return axios.delete(`${URL}/restaurant/${restaurantId}/menu/${itemId}`,  {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
+}
+
 const fetchOrdersForRestaurantSuccess = (orders) => {
     return {
         type: 'ORDERS_FETCH_SUCCESS',
@@ -100,11 +114,11 @@ const fetchTopRestaurantsSuccess = (restaurants) => {
     }
 }
 
-const fetchItemsSuccess = (response) => {
+const fetchItemsSuccess = (response, restaurantId) => {
     return {
         type: 'FETCH_ITEMS_SUCCESS',
         payload: {
-            restaurantId: response.items[0].restaurantId,
+            restaurantId: restaurantId,
             items: response.items
         }
     }
@@ -124,6 +138,15 @@ const fetchItemsFailure = () => {
         type: 'FETCH_ITEMS_FAILURE',
         payload: {
             error: 'Restaurant not serving at the moment! Please try later'
+        }
+    }
+}
+
+const addItemFailure = () => {
+    return {
+        type: 'ADD_ITEM_FAILURE',
+        payload: {
+            error: 'Adding item failed'
         }
     }
 }
@@ -181,7 +204,7 @@ export const fetchItemsTrigger = (restaurantId) => {
             if(response.data.length === 0) {
                 dispatch(fetchItemsFailure())
             } else
-                dispatch(fetchItemsSuccess(response.data))
+                dispatch(fetchItemsSuccess(response.data, restaurantId))
         }).catch((error) => {
             console.log(error);
             dispatch(fetchItemsFailure())
@@ -208,6 +231,28 @@ export const fetchRestaurantOrdersTrigger = (restaurantId) => {
         }).catch((error) => {
             console.log(error);
             dispatch(fetchOrdersForRestaurantFailure())
+        })
+    }
+}
+
+export const addItemTrigger = (item, restaurantId, userId) => {
+    return dispatch => {
+        return tryAddingItem(item, restaurantId).then(() => {
+            dispatch(fetchOwnedRestaurantTrigger(userId));
+        }).catch(error => {
+            console.log(error);
+            dispatch(addItemFailure())
+        })
+    }
+}
+
+export const triggerDeleteItem = (itemId, restaurantId, userId) => {
+    return dispatch => {
+        return tryDeletingItem(itemId, restaurantId).then(() => {
+            dispatch(fetchOwnedRestaurantTrigger(userId));
+        }).catch(error => {
+            console.log(error);
+            dispatch(addItemFailure())
         })
     }
 }

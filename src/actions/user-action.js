@@ -158,7 +158,7 @@ export const updateTrigger = (user) => {
     return dispatch => {
         return updateUser(user).then(response => {
             console.log(response);
-            dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "http://google.com", user.id));
+            dispatch(updateSuccess(user.email, user.password, user.name, user.phone, user.type, "http://google.com", user._id));
         }).catch(error => {
             console.log(error);
             dispatch(updateFailure('Something went wrong! Please try again later'));
@@ -178,7 +178,7 @@ export const signUp = (user) => {
 			dispatch(signUpSuccess(response.data + 'Go to login page'));
 		}).catch(error => {
 			console.log(error.response);
-			dispatch(signUpFailure(error.response.data + 'Try again'));
+			dispatch(signUpFailure(error + ' Try again'));
 		});
 	};
 }

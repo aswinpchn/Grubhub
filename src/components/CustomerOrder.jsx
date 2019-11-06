@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import { connect } from 'react-redux';
-import { Card, Alert, Form } from 'react-bootstrap';
+import { Card, Pagination } from 'react-bootstrap';
 import { getCustomerOrderTrigger } from '../actions/order-actions';
 
 class CustomerOrder extends React.Component {
@@ -12,8 +12,11 @@ class CustomerOrder extends React.Component {
         this.renderOrderList = this.renderOrderList.bind(this);
         this.handleOrderSelect = this.handleOrderSelect.bind(this);
         this.state = {
-            selectedOrderId: ''
+            selectedOrderId: '',
+            activePage: 1
         };
+        this.renderPagination = this.renderPagination.bind(this);
+        this.pageClicked  = this.pageClicked.bind(this);
     }
 
     componentDidMount () {
@@ -43,8 +46,31 @@ class CustomerOrder extends React.Component {
         }
     }
 
+    pageClicked(pageNumber) {
+        this.setState({
+            activePage: pageNumber,
+        });
+    }
+
+    renderPagination() {
+        let items = [];
+        for (let number = 1; number <= Math.ceil(this.props.order.customerOrder.orders.length / 10); number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === this.state.activePage} onClick={() => this.pageClicked(number)}>
+                {number}
+                </Pagination.Item>,
+            );
+        }
+        if(items.length > 0)
+            return(
+                <Pagination>{items}</Pagination>
+            )
+    }
+
     renderOrderList(customerOrders) {
-        return customerOrders.orders.map((order) => 
+        const ordersInPageSelected = customerOrders.orders.slice((this.state.activePage-1)*10, this.state.activePage*10);
+
+        return ordersInPageSelected.map((order) => 
         <>
             <Card className="shadow bg-white rounded" style={{height: "5rem"}} key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
                 <Card.Body>
@@ -69,6 +95,7 @@ class CustomerOrder extends React.Component {
             // Customer static order display here.
             return(<>
             <span>{customerOrders.numberoforders} order(s)</span>
+            {this.renderPagination()}
             {this.renderOrderList(customerOrders)}
             </>);
         }

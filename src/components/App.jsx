@@ -7,6 +7,7 @@ import Profile from './Profile';
 import CustomerOrder from './CustomerOrder';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { store } from '../store';
+import RestaurantManager from './RestaurantManager';
 
 function App() {
   // This line will execute only once, when code come here, whenever we redirect or link any path, It goes inside the render only of that specific path.
@@ -26,6 +27,10 @@ function App() {
               var props =store.getState();
               return (props.user && props.user.username !== "") ? <Profile /> :(<Redirect to="/login" />)
             }} />
+            <Route path='/restaurant' render={() => { 
+              var props =store.getState();
+              return (props.user && props.user.username !== "") ? <RestaurantManager /> :(<Redirect to="/login" />)
+            }} /> 
             <Route path='/customerOrders' render={() => { 
               var props =store.getState();
               return (props.user && props.user.username !== "" && props.user.type === 'c') ? <CustomerOrder /> :(<Redirect to="/login" />)
