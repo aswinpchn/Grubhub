@@ -38,6 +38,11 @@ const orderReuducer = (state = {}, action) => {
                 error: action.payload.error
             });
         }
+        case 'CHAT_FETCH_SUCCESS': {
+            return Object.assign({}, state, {
+                chat: action.payload.chat
+            });
+        }
         default : 
             return state;
     }

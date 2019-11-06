@@ -19,11 +19,51 @@ const tryGettingCustomerOrder = (userid) => {
 }
 
 const tryUpdatingOrderStatus = (orderId, request) => {
-    console.log(request);
     return axios.post(`${URL}/order/${orderId}`, request, {headers: {
         "Authorization" : `Bearer ${cookie.load('cookie')}`
       }
     });
+}
+
+const tryFetchingChat = (orderId) => {
+    return axios.get(`${URL}/chat/${orderId}`, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
+}
+
+const trySendingChat = (request) => {
+    return axios.put(`${URL}/chat`, request, {headers: {
+        "Authorization" : `Bearer ${cookie.load('cookie')}`
+      }
+    });
+}
+
+const fetchChatSuccess = (response) => {
+    return {
+        type: 'CHAT_FETCH_SUCCESS',
+        payload: {
+            chat: response
+        }
+    }
+}
+
+const fetchChatFailure = (error) => {
+    return {
+        type: 'CHAT_FETCH_FAILURE',
+        payload: {
+            error: 'Fetching chat failed. Try again later'
+        }
+    }
+}
+
+const addChatFailure = (error) => {
+    return {
+        type: 'CHAT_ADD_FAILURE',
+        payload: {
+            error: 'Sending message failed. Try again later'
+        }
+    }
 }
 
 const updateOrderStatusSuccess = (response) => {
@@ -108,4 +148,24 @@ export const updateOrderStatusTrigger = (orderId, restaurantId, status) => {
             dispatch(updateOrderStatusFailure());
         });
     };
+}
+
+export const fetchChatForOrderTrigger = (orderId) => {
+    return dispatch => {
+        return tryFetchingChat(orderId).then((response) => {
+            dispatch(fetchChatSuccess(response.data));
+        }).catch(error => {
+            dispatch(fetchChatFailure());
+        })
+    }
+}
+
+export const sendMessageTrigger = (message, orderId, sender) => {
+    return dispatch => {
+        return trySendingChat({ message, orderId, sender }).then((response) => {
+            dispatch(fetchChatForOrderTrigger(orderId));
+        }).catch(error => {
+            dispatch(addChatFailure());
+        })
+    }
 }

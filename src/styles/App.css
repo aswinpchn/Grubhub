@@ -96,8 +96,18 @@ html, body, #root {
   margin-top: 10rem;
 }
 
+.chat-add-form {
+  width: 25%;
+  align-self: center;
+  margin-top: 2rem;
+}
+
 .form-buttons {
     margin-left: 40%;
+}
+
+.chat-form-message {
+  display: flex;
 }
 
 .form-login-buttons, .form-signup-buttons {

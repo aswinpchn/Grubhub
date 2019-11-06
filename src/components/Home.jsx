@@ -2,9 +2,10 @@ import React from 'react';
 import Header from './Header';
 import { connect } from 'react-redux';
 import { fetchOwnedRestaurantTrigger, fetchTopRestaurantsTrigger, fetchMatchingRestaurantsTrigger, fetchItemsTrigger, triggerCloseItems, fetchRestaurantOrdersTrigger } from  './../actions/restaurant-action';
-import { updateOrderStatusTrigger } from '../actions/order-actions';
+import { updateOrderStatusTrigger, fetchChatForOrderTrigger, sendMessageTrigger } from '../actions/order-actions';
 import { Card, Alert, Form, Pagination } from 'react-bootstrap';
 import Items from './Items';
+import Chat from './Chat';
 
 class Home extends React.Component {
 
@@ -25,6 +26,9 @@ class Home extends React.Component {
         this.pageClicked  = this.pageClicked.bind(this);
         this.renderOrderPagination = this.renderOrderPagination.bind(this);
         this.orderPageClicked = this.orderPageClicked.bind(this);
+        this.handleChatClicked = this.handleChatClicked.bind(this);
+        this.renderChatList = this.renderChatList.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
     }
 
     renderErrorMessage() {
@@ -50,8 +54,27 @@ class Home extends React.Component {
     renderItems(restaurantId) {
         if(this.props.selectedRestaurant)
         return (
-            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user.id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
+            <Items items={this.props.selectedRestaurant.items} userDetails={this.props.user._id} restaurantDetails={restaurantId} />  // If parent updates(re-renders), child will also re-render, it wont unmount and mount again, it will just re-render.
         )
+    }
+
+    handleChatClicked(orderId) {
+        this.setState({
+            chatFor: orderId
+        });
+        this.props.fetchChatForOrder(orderId);
+    }
+
+    sendMessage(message) {
+        this.props.sendMessage(message, this.state.chatFor, { userId: this.props.user.id, name: this.props.user.name });
+    }
+
+    renderChatList(orderId) {
+        if(this.state.chatFor == orderId) {
+            return(
+                <Chat chat={this.props.chat} sendMessage={this.sendMessage} />
+            )
+        }
     }
 
     renderOrderItems(id, menu) {
@@ -114,10 +137,10 @@ class Home extends React.Component {
         const customerOrdersToBeDisplayed = customerOrders.slice((this.state.activeOrderPage-1)*10, this.state.activeOrderPage*10);
         return customerOrdersToBeDisplayed.map((order) => 
         <>
-            <Card className="shadow bg-white rounded" key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
+            <Card className="shadow bg-white rounded" key={order._id}>
                 <Card.Body>
-                    <Card.Title>Order Id : {order._id}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
+                    <Card.Title>Order Id : {order._id}<button onClick={() => this.handleChatClicked(order._id)} style={{float: 'right'}}>Chat</button></Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted" onClick={() => this.handleOrderSelect(order._id)}>
                         <span className="order-contents">Time : {new Date(Date.parse(order.ordertime)).toString().split('GMT')[0]}</span>
                         <span className="order-contents">Status : {order.status}</span>
                         <span className="order-contents">
@@ -131,6 +154,7 @@ class Home extends React.Component {
                 </Card.Body>
             </Card>
             {this.renderOrderItems(order._id, order.menu)}
+            {this.renderChatList(order._id)}
         </>
     );
     }
@@ -180,7 +204,7 @@ class Home extends React.Component {
     renderOwnerView() {
         let customerOrders = this.props.orders;
         if(customerOrders) {
-            console.log(customerOrders);
+            //console.log(customerOrders);
             if(customerOrders.numberoforders === 0) {
                 return <div>
                         No orders to display
@@ -229,7 +253,8 @@ const mapStateToProps = (state) => {
         foundMatching: state.restaurant.foundMatching,
         selectedRestaurant: state.restaurant.selectedRestaurant,
         order : state.order,
-        orders: state.order.orders
+        orders: state.order.orders,
+        chat: state.order.chat
     };
 }
 
@@ -240,7 +265,9 @@ const mapDispatchToProps = (dispatch) => ({
     fetchItemsTrigger: (restaurantId) => dispatch(fetchItemsTrigger(restaurantId)),
     triggerCloseItems: () => dispatch(triggerCloseItems()),
     fetchRestaurantOrders: (restaurantId) => dispatch(fetchRestaurantOrdersTrigger(restaurantId)),
-    updateOrderStatus: (orderId, restaurantId, status) => dispatch(updateOrderStatusTrigger(orderId, restaurantId, status))
+    updateOrderStatus: (orderId, restaurantId, status) => dispatch(updateOrderStatusTrigger(orderId, restaurantId, status)),
+    fetchChatForOrder: (orderId) => dispatch(fetchChatForOrderTrigger(orderId)),
+    sendMessage: (message, orderId, sender) => dispatch(sendMessageTrigger(message, orderId, sender)) 
 });
 
 export default connect (mapStateToProps, mapDispatchToProps)(Home);

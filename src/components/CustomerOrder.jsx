@@ -2,7 +2,9 @@ import React from 'react';
 import Header from './Header';
 import { connect } from 'react-redux';
 import { Card, Pagination } from 'react-bootstrap';
+import { fetchChatForOrderTrigger, sendMessageTrigger } from '../actions/order-actions';
 import { getCustomerOrderTrigger } from '../actions/order-actions';
+import Chat from './Chat';
 
 class CustomerOrder extends React.Component {
     constructor(props) {
@@ -17,6 +19,9 @@ class CustomerOrder extends React.Component {
         };
         this.renderPagination = this.renderPagination.bind(this);
         this.pageClicked  = this.pageClicked.bind(this);
+        this.handleChatClicked = this.handleChatClicked.bind(this);
+        this.renderChatList = this.renderChatList.bind(this);
+        this.sendMessage = this.sendMessage.bind(this);
     }
 
     componentDidMount () {
@@ -67,6 +72,25 @@ class CustomerOrder extends React.Component {
             )
     }
 
+    handleChatClicked(orderId) {
+        this.setState({
+            chatFor: orderId
+        });
+        this.props.fetchChatForOrder(orderId);
+    }
+
+    sendMessage(message) {
+        this.props.sendMessage(message, this.state.chatFor, { userId: this.props.user.id, name: this.props.user.name });
+    }
+
+    renderChatList(orderId) {
+        if(this.state.chatFor == orderId) {
+            return(
+                <Chat chat={this.props.chat} sendMessage={this.sendMessage} />
+            )
+        }
+    }
+
     renderOrderList(customerOrders) {
         const ordersInPageSelected = customerOrders.orders.slice((this.state.activePage-1)*10, this.state.activePage*10);
 
@@ -74,12 +98,13 @@ class CustomerOrder extends React.Component {
         <>
             <Card className="shadow bg-white rounded" style={{height: "5rem"}} key={order._id} onClick={() => this.handleOrderSelect(order._id)}>
                 <Card.Body>
-                    <Card.Title>Restaurant name : {order.restaurantid}</Card.Title>
+                    <Card.Title>Restaurant name : {order.restaurantid}<button onClick={() => this.handleChatClicked(order._id)} style={{float: 'right'}}>Chat</button></Card.Title>
                     <Card.Subtitle className="mb-2 text-muted"><span className="order-contents">Time : {new Date(Date.parse(order.ordertime)).toDateString()}</span><span className="order-contents">Status : {order.status}</span></Card.Subtitle>
                 </Card.Body>
             </Card>
             <div className="item-list">
                 {this.renderItems(order._id, order.orderDetails)}
+                {this.renderChatList(order._id)}
             </div>
         </>
     );
@@ -119,6 +144,7 @@ const mapStateToProps = (state) => {
     return {
         order : state.order,
         user : state.user,
+        chat: state.order.chat
     };
 };
 
@@ -126,7 +152,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCustomerOrderTrigger : (userid) => {
             dispatch(getCustomerOrderTrigger(userid));
-        }
+        },
+    fetchChatForOrder: (orderId) => dispatch(fetchChatForOrderTrigger(orderId)),
+    sendMessage: (message, orderId, sender) => dispatch(sendMessageTrigger(message, orderId, sender)) 
     };
 }
 
