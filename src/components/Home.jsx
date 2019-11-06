@@ -81,7 +81,7 @@ class Home extends React.Component {
                                     <Card.Subtitle className="mb-2 text-muted">Cuisine : {restaurant.cuisine}</Card.Subtitle>
                                 </Card.Body>
                             </Card>
-                            {this.renderItems(restaurant._id)}
+                            {this.props.selectedRestaurant && this.props.selectedRestaurant.restaurantId == restaurant._id ? this.renderItems(restaurant._id) : ''}
                         </>
                     )
                 });
