@@ -5,5 +5,6 @@ const connectionPromise = mongoose.connect('mongodb+srv://root:11923914@grubhub-
 connectionPromise.then(response => {
     console.log('Connection success');
 }).catch(error => {
+    console.log(error);
     console.log('Connection failure');
 });

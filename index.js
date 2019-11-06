@@ -6,6 +6,7 @@ var cors = require('cors');
 const restaurantsRoute = require('./routes/restaurants');
 const usersRoute = require('./routes/users');
 const ordersRoute = require('./routes/orders');
+const chatRoute = require('./routes/chat');
 const { URL } = require('./constants');
 
 app.use(cookieParser()) // needed if you want to sign a cookie
@@ -31,6 +32,7 @@ app.use(function(req, res, next) {
 app.use('/user', usersRoute);
 app.use('/restaurant', restaurantsRoute);
 app.use('/order', ordersRoute);
+app.use('/chat', chatRoute);
 
 app.listen(3001);
 console.log("Server Listening on port 3001");
