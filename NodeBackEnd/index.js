@@ -1,56 +1,40 @@
-//import the require dependencies
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var cors = require('cors');
-var kafka = require('./kafka/client');
-//use cors to allow cross origin resource sharing
-app.use(cors({ origin: 'http://localhost:8080', credentials: true }));
+const restaurantsRoute = require('./routes/restaurants');
+const usersRoute = require('./routes/users');
+const ordersRoute = require('./routes/orders');
+const chatRoute = require('./routes/chat');
+const { URL } = require('./constants');
+
+app.use(cookieParser()) // needed if you want to sign a cookie
+// res.cookie("aswin","21"); // in this way we can set a cookie in our client side
+
+// Cookie is basic, session is something that needs more work.
+// https://stackoverflow.com/questions/3804209/what-are-sessions-how-do-they-work
+// https://www.youtube.com/watch?v=SUZAIYLebnQ&t=9s
+
+app.use(cors({ origin: URL, credentials: true }));
+
 app.use(bodyParser.json());
 
-//Allow Access Control
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
-    res.setHeader('Cache-Control', 'no-cache');
-    next();
-  });
-
-
-
-//Route to get All Books when user visits the Home Page
-/*app.get('/books', function(req,res){   
-    res.writeHead(200,{
-        'Content-Type' : 'application/json'
-    });
-    res.end(JSON.stringify(books));
-    
+  res.setHeader('Access-Control-Allow-Origin', URL);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
 });
-*/
-app.post('/book', function(req, res){
 
-    kafka.make_request('post_book',req.body, function(err,results){
-        console.log('in result');
-        console.log(results);
-        if (err){
-            console.log("Inside err");
-            res.json({
-                status:"error",
-                msg:"System Error, Try Again."
-            })
-        }else{
-            console.log("Inside else");
-                res.json({
-                    updatedList:results
-                });
+app.use('/user', usersRoute);
+app.use('/restaurant', restaurantsRoute);
+app.use('/order', ordersRoute);
+app.use('/chat', chatRoute);
 
-                res.end();
-            }
-        
-    });
-});
-//start your server on port 3001
 app.listen(3001);
 console.log("Server Listening on port 3001");
+
+module.exports = app;
